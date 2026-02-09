@@ -1,92 +1,83 @@
-/* 加载 IBM Plex Sans SC 中文字体 */
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+SC:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #0a1628;
-  --color-foreground: #e8edf5;
-  --color-primary: #3b82f6;
-  --color-primary-light: #60a5fa;
-  --color-accent-gold: #fbbf24;
-  --color-accent-pink: #f472b6;
-  --color-accent-green: #34d399;
-  --color-accent-red: #f87171;
-  --color-surface: #111d35;
-  --color-surface-light: #1a2a4a;
-  --color-surface-lighter: #243656;
-  --color-border: #2a3f66;
-  --font-sans: var(--font-space-grotesk), "IBM Plex Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+  --color-background: #f3f4ef;
+  --color-foreground: #19242f;
+  --color-primary: #176b63;
+  --color-primary-light: #2c8f85;
+  --color-accent-gold: #9f7a32;
+  --color-accent-pink: #bd6a56;
+  --color-accent-green: #2f7d4b;
+  --color-accent-red: #b44a2a;
+  --color-surface: #ffffff;
+  --color-surface-light: #f8f8f4;
+  --color-surface-lighter: #e5e7df;
+  --color-border: #d2d6ca;
+  --font-sans: "IBM Plex Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
   --font-mono: ui-monospace, monospace;
+}
+
+html {
+  font-size: 16px;
 }
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #2a3f66 transparent;
+  scrollbar-color: #c6ccbd transparent;
 }
 
 body {
-  background: var(--color-background);
-  color: var(--color-foreground);
-  font-family: var(--font-sans);
   min-height: 100vh;
   overflow-x: hidden;
+  background:
+    radial-gradient(900px 520px at 92% -8%, rgba(23, 107, 99, 0.08), transparent 52%),
+    radial-gradient(800px 460px at 4% 0%, rgba(159, 122, 50, 0.08), transparent 50%),
+    linear-gradient(180deg, #f8f9f5 0%, #f3f4ef 52%, #eef0e8 100%);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  text-rendering: optimizeLegibility;
 }
 
-/* 太空背景星星动画 */
-@keyframes twinkle {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 1; }
+.panel-shadow {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 1px 2px rgba(15, 23, 42, 0.03),
+    0 12px 28px rgba(15, 23, 42, 0.045);
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+.num {
+  font-family: var(--font-space-grotesk), "IBM Plex Sans SC", system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
 }
 
-@keyframes starPop {
-  0% { transform: scale(0) rotate(0deg); opacity: 0; }
-  50% { transform: scale(1.3) rotate(180deg); opacity: 1; }
-  100% { transform: scale(1) rotate(360deg); opacity: 1; }
+button {
+  transition-property: background-color, border-color, color, box-shadow, transform, opacity;
+  transition-duration: 180ms;
+  transition-timing-function: ease;
 }
 
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-.star-pop {
-  animation: starPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
-.float-animation {
-  animation: float 3s ease-in-out infinite;
-}
-
-.shimmer-text {
-  background: linear-gradient(90deg, #fbbf24, #f472b6, #60a5fa, #fbbf24);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: shimmer 3s linear infinite;
-}
-
-/* 移动端触摸优化 */
 @media (max-width: 767px) {
+  html {
+    font-size: 17px;
+  }
+
   button {
     -webkit-tap-highlight-color: transparent;
   }
 
   .scrollbar-thin::-webkit-scrollbar {
-    height: 3px;
+    height: 4px;
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    background: #2a3f66;
-    border-radius: 4px;
+    background: #c6ccbd;
+    border-radius: 999px;
   }
 }
 
-/* 安全区域适配（iPhone 刘海/底部横条） */
 @supports (padding: env(safe-area-inset-bottom)) {
   body {
     padding-bottom: env(safe-area-inset-bottom);

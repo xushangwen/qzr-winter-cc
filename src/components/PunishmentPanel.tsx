@@ -17,97 +17,78 @@ export default function PunishmentPanel({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: 0.2 }}
-      className={`
-        bg-surface/80 backdrop-blur-xl rounded-2xl border p-4 md:p-5
-        ${isTriggered ? "border-accent-red/40" : "border-border/50"}
-      `}
+      transition={{ duration: 0.3, delay: 0.12 }}
+      className={`panel-shadow rounded-3xl border bg-surface/94 p-4 md:p-5 ${
+        isTriggered ? "border-accent-red/35" : "border-border/75"
+      }`}
     >
-      <div className="flex items-center gap-2 mb-2.5 md:mb-3">
-        <i
-          className={`ri-alarm-warning-line text-base md:text-lg ${
-            isTriggered ? "text-accent-red" : "text-foreground/40"
-          }`}
-        />
-        <h2 className="text-sm md:text-base font-semibold text-foreground/90">惩罚机制</h2>
+      <div className="mb-3 flex items-center gap-2">
+        <i className={`ri-alarm-warning-line text-lg ${isTriggered ? "text-accent-red" : "text-foreground/56"}`} />
+        <h2 className="text-base font-semibold text-foreground md:text-lg">惩罚机制</h2>
       </div>
 
-      <p className="text-[11px] md:text-xs text-foreground/40 mb-2.5 md:mb-3">
-        一周完成率低于 {WEEKLY_PASS_THRESHOLD}% 将触发惩罚
-        {isPending ? "（本周进行中，周结束后判定）" : ""}
+      <p className="mb-3 text-sm text-foreground/70">
+        周完成率低于 {WEEKLY_PASS_THRESHOLD}% 将触发惩罚
+        {isPending ? "（本周进行中，周末统一判定）" : ""}
       </p>
 
-      {/* 本周达标状态 */}
       <div
-        className={`
-          rounded-xl p-3 mb-3 border
-          ${isTriggered
-            ? "bg-accent-red/10 border-accent-red/20"
+        className={`mb-4 rounded-2xl border p-3 ${
+          isTriggered
+            ? "border-accent-red/25 bg-accent-red/8"
             : isPending
-            ? "bg-surface-light/30 border-border/20"
-            : weekRate === 0
-            ? "bg-surface-light/30 border-border/20"
-            : "bg-accent-green/10 border-accent-green/20"
-          }
-        `}
+            ? "border-border/70 bg-surface-light/60"
+            : "border-accent-green/25 bg-accent-green/10"
+        }`}
       >
         <div className="flex items-center justify-between">
-          <span className="text-xs text-foreground/50">本周完成率</span>
+          <span className="text-sm text-foreground/66">本周完成率</span>
           <span
-            className={`text-lg font-bold ${
+            className={`num text-2xl font-semibold ${
               isTriggered
                 ? "text-accent-red"
                 : isPending
-                ? "text-foreground/30"
-                : weekRate === 0
-                ? "text-foreground/30"
+                ? "text-foreground/45"
                 : "text-accent-green"
             }`}
           >
             {weekRate}%
           </span>
         </div>
-        <div className="w-full h-1.5 rounded-full bg-surface-lighter/50 mt-2 overflow-hidden">
+        <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-surface-lighter/90">
           <motion.div
             className={`h-full rounded-full ${
               isTriggered
                 ? "bg-accent-red"
                 : isPending
                 ? "bg-surface-lighter"
-                : "bg-gradient-to-r from-accent-green to-accent-gold"
+                : "bg-gradient-to-r from-accent-green to-primary"
             }`}
             initial={{ width: 0 }}
             animate={{ width: `${weekRate}%` }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.7 }}
           />
         </div>
       </div>
 
-      {/* 惩罚项列表 */}
       <div className="space-y-2">
         {PUNISHMENTS.map((punishment) => (
           <div
             key={punishment.id}
-            className={`
-              flex items-center gap-2.5 px-3 py-2 rounded-lg transition-all
-              ${isTriggered
+            className={`flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm ${
+              isTriggered
                 ? "bg-accent-red/10 text-accent-red"
-                : "bg-surface-light/30 text-foreground/40"
-              }
-            `}
+                : "bg-surface-light/70 text-foreground/66"
+            }`}
           >
             <i className={`${punishment.icon} text-base`} />
-            <span className="text-sm">{punishment.name}</span>
+            <span>{punishment.name}</span>
             {isTriggered && (
-              <motion.span
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="ml-auto text-[10px] bg-accent-red/20 px-1.5 py-0.5 rounded-full"
-              >
+              <span className="ml-auto rounded-full bg-accent-red/18 px-2 py-0.5 text-xs font-medium">
                 触发
-              </motion.span>
+              </span>
             )}
           </div>
         ))}

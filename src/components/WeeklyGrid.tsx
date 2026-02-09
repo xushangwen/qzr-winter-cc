@@ -2,8 +2,8 @@
 
 import { motion } from "framer-motion";
 import { TASKS, WEEKDAY_NAMES_SHORT } from "@/lib/constants";
-import { CheckStatus } from "@/lib/types";
 import { formatDateShort, isTodayDate } from "@/lib/date-utils";
+import { CheckStatus } from "@/lib/types";
 import StarCell from "./StarCell";
 
 interface WeeklyGridProps {
@@ -27,45 +27,34 @@ export default function WeeklyGrid({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-      className="bg-surface/80 backdrop-blur-xl rounded-2xl border border-border/50 overflow-hidden"
+      transition={{ duration: 0.3 }}
+      className="panel-shadow overflow-hidden rounded-3xl border border-border/75 bg-surface/94"
     >
-      {/* 横滑提示（仅移动端） */}
-      <div className="flex items-center justify-end gap-1 px-3 py-1.5 md:hidden text-[10px] text-foreground/30">
-        <i className="ri-arrow-left-right-line text-xs" />
-        <span>左右滑动查看</span>
+      <div className="flex items-center justify-end gap-1 px-4 py-2 text-xs text-foreground/58 md:hidden">
+        <i className="ri-arrow-left-right-line" />
+        <span>左右滑动查看整周</span>
       </div>
 
-      {/* 表格容器 */}
-      <div className="overflow-x-auto scrollbar-thin -mt-1 md:mt-0">
-        <table className="w-full min-w-[520px]">
-          {/* 表头：星期 */}
+      <div className="scrollbar-thin overflow-x-auto">
+        <table className="w-full min-w-[680px]">
           <thead>
             <tr>
-              <th className="sticky left-0 z-10 bg-surface/95 backdrop-blur-sm px-2 md:px-3 py-2.5 md:py-3 text-left w-[80px] md:w-[110px]">
-                <span className="text-[10px] md:text-xs text-foreground/40 uppercase tracking-wider">
-                  任务
-                </span>
+              <th className="sticky left-0 z-10 w-[144px] bg-surface/96 px-3 py-3 text-left backdrop-blur-sm">
+                <span className="text-xs font-semibold uppercase tracking-wider text-foreground/56">任务</span>
               </th>
               {weekDates.map((date, index) => {
                 const today = isTodayDate(date);
                 return (
-                  <th key={date} className="px-0.5 md:px-1 py-2.5 md:py-3 text-center min-w-[52px] md:min-w-[64px]">
-                    <div
-                      className={`flex flex-col items-center gap-0.5 ${
-                        today ? "text-primary-light" : "text-foreground/60"
-                      }`}
-                    >
-                      <span className="text-[9px] md:text-[10px] uppercase tracking-wider">
+                  <th key={date} className="min-w-[76px] px-1 py-3 text-center">
+                    <div className="flex flex-col items-center gap-1">
+                      <span className={`text-xs ${today ? "text-primary" : "text-foreground/58"}`}>
                         {WEEKDAY_NAMES_SHORT[index]}
                       </span>
                       <span
-                        className={`text-[10px] md:text-xs font-medium ${
-                          today
-                            ? "bg-primary/20 text-primary-light px-1.5 md:px-2 py-0.5 rounded-full"
-                            : ""
+                        className={`num rounded-full px-2 py-0.5 text-xs font-semibold md:text-sm ${
+                          today ? "bg-primary/12 text-primary" : "text-foreground/72"
                         }`}
                       >
                         {formatDateShort(date)}
@@ -77,31 +66,24 @@ export default function WeeklyGrid({
             </tr>
           </thead>
 
-          {/* 表体：任务行 */}
           <tbody>
             {TASKS.map((task, taskIndex) => (
               <motion.tr
                 key={task.id}
-                initial={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: taskIndex * 0.05 }}
-                className="border-t border-border/20 hover:bg-surface-light/30 transition-colors"
+                transition={{ delay: taskIndex * 0.035 }}
+                className="border-t border-border/60 hover:bg-surface-light/35"
               >
-                {/* 任务名称 */}
-                <td className="sticky left-0 z-10 bg-surface/95 backdrop-blur-sm px-2 md:px-3 py-1.5 md:py-2">
-                  <div className="flex items-center gap-1.5 md:gap-2">
-                    <i
-                      className={`${task.icon} text-primary-light/70 text-sm md:text-base`}
-                    />
-                    <span className="text-[11px] md:text-sm font-medium text-foreground/80 whitespace-nowrap">
-                      {task.name}
-                    </span>
+                <td className="sticky left-0 z-10 bg-surface/96 px-3 py-2.5 backdrop-blur-sm">
+                  <div className="flex items-center gap-2">
+                    <i className={`${task.icon} text-base text-primary/78`} />
+                    <span className="text-sm font-medium text-foreground/88 md:text-[15px]">{task.name}</span>
                   </div>
                 </td>
 
-                {/* 打卡格子 */}
                 {weekDates.map((date) => (
-                  <td key={`${task.id}-${date}`} className="px-0.5 md:px-1 py-1 md:py-1.5">
+                  <td key={`${task.id}-${date}`} className="px-1 py-1.5">
                     <StarCell
                       status={getStatus(date, task.id)}
                       onToggle={() => onToggle(date, task.id)}
@@ -113,30 +95,29 @@ export default function WeeklyGrid({
             ))}
           </tbody>
 
-          {/* 表尾：每日统计 */}
           <tfoot>
-            <tr className="border-t-2 border-border/40">
-              <td className="sticky left-0 z-10 bg-surface/95 backdrop-blur-sm px-2 md:px-3 py-2.5 md:py-3">
-                <span className="text-[10px] md:text-xs text-foreground/40">每日统计</span>
+            <tr className="border-t-2 border-border/80 bg-surface-light/45">
+              <td className="sticky left-0 z-10 bg-surface/96 px-3 py-3 backdrop-blur-sm">
+                <span className="text-xs font-semibold text-foreground/66 md:text-sm">每日统计</span>
               </td>
               {weekDates.map((date) => {
                 const stars = getDayStars(date);
                 const rate = getDayRate(date);
                 return (
-                  <td key={`stats-${date}`} className="px-0.5 md:px-1 py-2.5 md:py-3 text-center">
-                    <div className="flex flex-col items-center gap-0.5 md:gap-1">
-                      <span className="text-[10px] md:text-xs font-semibold text-accent-gold">
+                  <td key={`stats-${date}`} className="px-1 py-3 text-center">
+                    <div className="flex flex-col items-center gap-0.5">
+                      <span className="num text-xs font-semibold text-accent-gold md:text-sm">
                         {stars > 0 ? `★${stars}` : "-"}
                       </span>
                       <span
-                        className={`text-[9px] md:text-[10px] ${
+                        className={`num text-xs md:text-sm ${
                           rate >= 80
                             ? "text-accent-green"
                             : rate >= 50
                             ? "text-accent-gold"
                             : rate > 0
                             ? "text-accent-red"
-                            : "text-foreground/20"
+                            : "text-foreground/36"
                         }`}
                       >
                         {rate > 0 ? `${rate}%` : ""}

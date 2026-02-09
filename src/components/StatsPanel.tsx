@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { TASKS, STAR_POINTS } from "@/lib/constants";
+import { STAR_POINTS, TASKS } from "@/lib/constants";
 import { AppData, CheckStatus } from "@/lib/types";
 
 interface StatsPanelProps {
@@ -17,17 +17,14 @@ export default function StatsPanel({
   weekStars,
   weekRate,
 }: StatsPanelProps) {
-  // 计算每个任务本周的完成情况
   const taskStats = TASKS.map((task) => {
     let goldCount = 0;
     let pinkCount = 0;
-    let totalPoints = 0;
 
     weekDates.forEach((date) => {
       const status: CheckStatus = data.records[date]?.[task.id] || "none";
       if (status === "gold") goldCount++;
       if (status === "pink") pinkCount++;
-      totalPoints += STAR_POINTS[status];
     });
 
     return {
@@ -35,15 +32,12 @@ export default function StatsPanel({
       goldCount,
       pinkCount,
       totalCount: goldCount + pinkCount,
-      totalPoints,
       rate: Math.round(((goldCount + pinkCount) / 7) * 100),
     };
   });
 
-  // 按完成率排序
   const sortedStats = [...taskStats].sort((a, b) => b.rate - a.rate);
 
-  // 计算本周每天的星星数用于柱状图
   const dailyStars = weekDates.map((date) => {
     let stars = 0;
     for (const taskId in data.records[date] || {}) {
@@ -55,25 +49,24 @@ export default function StatsPanel({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: 0.15 }}
-      className="bg-surface/80 backdrop-blur-xl rounded-2xl border border-border/50 p-4 md:p-5"
+      transition={{ duration: 0.3 }}
+      className="panel-shadow rounded-3xl border border-border/75 bg-surface/94 p-4 md:p-5"
     >
-      <div className="flex items-center gap-2 mb-3 md:mb-4">
-        <i className="ri-bar-chart-2-line text-primary-light text-base md:text-lg" />
-        <h2 className="text-sm md:text-base font-semibold text-foreground/90">本周统计</h2>
+      <div className="mb-4 flex items-center gap-2">
+        <i className="ri-bar-chart-2-line text-lg text-primary" />
+        <h2 className="text-base font-semibold text-foreground md:text-lg">本周统计</h2>
       </div>
 
-      {/* 概览卡片 */}
-      <div className="grid grid-cols-3 gap-1.5 md:gap-2 mb-4 md:mb-5">
-        <div className="bg-surface-light/50 rounded-xl p-2.5 md:p-3 text-center">
-          <p className="text-xl md:text-2xl font-bold text-accent-gold">{weekStars}</p>
-          <p className="text-[9px] md:text-[10px] text-foreground/40 mt-0.5">本周星星</p>
+      <div className="mb-5 grid grid-cols-3 gap-2">
+        <div className="rounded-xl border border-border/50 bg-surface-light/80 p-3 text-center">
+          <p className="num text-2xl font-semibold text-accent-gold md:text-3xl">{weekStars}</p>
+          <p className="mt-1 text-xs text-foreground/62 md:text-sm">本周星星</p>
         </div>
-        <div className="bg-surface-light/50 rounded-xl p-2.5 md:p-3 text-center">
+        <div className="rounded-xl border border-border/50 bg-surface-light/80 p-3 text-center">
           <p
-            className={`text-xl md:text-2xl font-bold ${
+            className={`num text-2xl font-semibold md:text-3xl ${
               weekRate >= 80
                 ? "text-accent-green"
                 : weekRate >= 50
@@ -83,56 +76,43 @@ export default function StatsPanel({
           >
             {weekRate}%
           </p>
-          <p className="text-[9px] md:text-[10px] text-foreground/40 mt-0.5">完成率</p>
+          <p className="mt-1 text-xs text-foreground/62 md:text-sm">完成率</p>
         </div>
-        <div className="bg-surface-light/50 rounded-xl p-2.5 md:p-3 text-center">
-          <p className="text-xl md:text-2xl font-bold text-primary-light">
-            {taskStats.reduce((sum, t) => sum + t.totalCount, 0)}
+        <div className="rounded-xl border border-border/50 bg-surface-light/80 p-3 text-center">
+          <p className="num text-2xl font-semibold text-primary md:text-3xl">
+            {taskStats.reduce((sum, task) => sum + task.totalCount, 0)}
           </p>
-          <p className="text-[9px] md:text-[10px] text-foreground/40 mt-0.5">打卡次数</p>
+          <p className="mt-1 text-xs text-foreground/62 md:text-sm">打卡次数</p>
         </div>
       </div>
 
-      {/* 每日星星柱状图 */}
       <div className="mb-5">
-        <p className="text-xs text-foreground/40 mb-2">每日星星分布</p>
-        <div className="flex items-end gap-1.5 h-[80px]">
+        <p className="mb-2 text-sm font-medium text-foreground/72">每日星星分布</p>
+        <div className="flex h-[92px] items-end gap-1.5">
           {dailyStars.map((stars, index) => (
-            <div
-              key={index}
-              className="flex-1 flex flex-col items-center gap-1"
-            >
+            <div key={weekDates[index]} className="flex flex-1 flex-col items-center gap-1">
               <motion.div
                 className="w-full rounded-t-md bg-gradient-to-t from-primary to-primary-light"
                 initial={{ height: 0 }}
-                animate={{
-                  height: `${(stars / maxDailyStars) * 60}px`,
-                }}
-                transition={{ duration: 0.5, delay: index * 0.05 }}
-                style={{ minHeight: stars > 0 ? "4px" : "0px" }}
+                animate={{ height: `${(stars / maxDailyStars) * 66}px` }}
+                transition={{ duration: 0.45, delay: index * 0.04 }}
+                style={{ minHeight: stars > 0 ? "5px" : "0" }}
               />
-              <span className="text-[9px] text-foreground/30">
-                {["一", "二", "三", "四", "五", "六", "日"][index]}
-              </span>
+              <span className="text-xs text-foreground/52">{["一", "二", "三", "四", "五", "六", "日"][index]}</span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* 各任务完成情况 */}
       <div>
-        <p className="text-xs text-foreground/40 mb-2">任务完成排行</p>
-        <div className="space-y-2">
+        <p className="mb-2 text-sm font-medium text-foreground/72">任务完成排行</p>
+        <div className="space-y-2.5">
           {sortedStats.map((task, index) => (
-            <div key={task.id} className="flex items-center gap-2">
-              <span className="text-[10px] text-foreground/30 w-4 text-right">
-                {index + 1}
-              </span>
-              <i className={`${task.icon} text-xs text-foreground/40`} />
-              <span className="text-xs text-foreground/70 w-24 truncate">
-                {task.name}
-              </span>
-              <div className="flex-1 h-1.5 rounded-full bg-surface-lighter/50 overflow-hidden">
+            <div key={task.id} className="flex items-center gap-2 text-sm">
+              <span className="num w-5 text-right text-xs text-foreground/52">{index + 1}</span>
+              <i className={`${task.icon} text-sm text-foreground/56`} />
+              <span className="w-24 truncate text-foreground/82">{task.name}</span>
+              <div className="h-2 flex-1 overflow-hidden rounded-full bg-surface-lighter/95">
                 <motion.div
                   className={`h-full rounded-full ${
                     task.rate >= 80
@@ -145,16 +125,12 @@ export default function StatsPanel({
                   }`}
                   initial={{ width: 0 }}
                   animate={{ width: `${task.rate}%` }}
-                  transition={{ duration: 0.6, delay: index * 0.05 }}
+                  transition={{ duration: 0.55, delay: index * 0.04 }}
                 />
               </div>
-              <div className="flex items-center gap-1 min-w-[50px] justify-end">
-                <span className="text-[10px] text-accent-gold">
-                  ⭐{task.goldCount}
-                </span>
-                <span className="text-[10px] text-accent-pink">
-                  🌸{task.pinkCount}
-                </span>
+              <div className="num flex min-w-[66px] items-center justify-end gap-1 text-xs md:text-sm">
+                <span className="text-accent-gold">⭐{task.goldCount}</span>
+                <span className="text-accent-pink">🌸{task.pinkCount}</span>
               </div>
             </div>
           ))}
