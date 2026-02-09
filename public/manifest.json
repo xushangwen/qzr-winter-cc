@@ -1,0 +1,16 @@
+{
+  "name": "乔子然寒假日程",
+  "short_name": "子然日程",
+  "description": "每日打卡追踪系统 - 积星兑奖、养成好习惯",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a1628",
+  "theme_color": "#0a1628",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ]
+}
