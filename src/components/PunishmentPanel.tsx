@@ -5,10 +5,15 @@ import { PUNISHMENTS, WEEKLY_PASS_THRESHOLD } from "@/lib/constants";
 
 interface PunishmentPanelProps {
   weekRate: number;
+  isWeekFinished: boolean;
 }
 
-export default function PunishmentPanel({ weekRate }: PunishmentPanelProps) {
-  const isTriggered = weekRate > 0 && weekRate < WEEKLY_PASS_THRESHOLD;
+export default function PunishmentPanel({
+  weekRate,
+  isWeekFinished,
+}: PunishmentPanelProps) {
+  const isTriggered = isWeekFinished && weekRate < WEEKLY_PASS_THRESHOLD;
+  const isPending = !isWeekFinished;
 
   return (
     <motion.div
@@ -31,6 +36,7 @@ export default function PunishmentPanel({ weekRate }: PunishmentPanelProps) {
 
       <p className="text-[11px] md:text-xs text-foreground/40 mb-2.5 md:mb-3">
         一周完成率低于 {WEEKLY_PASS_THRESHOLD}% 将触发惩罚
+        {isPending ? "（本周进行中，周结束后判定）" : ""}
       </p>
 
       {/* 本周达标状态 */}
@@ -39,6 +45,8 @@ export default function PunishmentPanel({ weekRate }: PunishmentPanelProps) {
           rounded-xl p-3 mb-3 border
           ${isTriggered
             ? "bg-accent-red/10 border-accent-red/20"
+            : isPending
+            ? "bg-surface-light/30 border-border/20"
             : weekRate === 0
             ? "bg-surface-light/30 border-border/20"
             : "bg-accent-green/10 border-accent-green/20"
@@ -51,6 +59,8 @@ export default function PunishmentPanel({ weekRate }: PunishmentPanelProps) {
             className={`text-lg font-bold ${
               isTriggered
                 ? "text-accent-red"
+                : isPending
+                ? "text-foreground/30"
                 : weekRate === 0
                 ? "text-foreground/30"
                 : "text-accent-green"
@@ -64,6 +74,8 @@ export default function PunishmentPanel({ weekRate }: PunishmentPanelProps) {
             className={`h-full rounded-full ${
               isTriggered
                 ? "bg-accent-red"
+                : isPending
+                ? "bg-surface-lighter"
                 : "bg-gradient-to-r from-accent-green to-accent-gold"
             }`}
             initial={{ width: 0 }}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { REWARDS } from "@/lib/constants";
 import { RedeemRecord } from "@/lib/types";
@@ -22,12 +22,24 @@ export default function RewardPanel({
 }: RewardPanelProps) {
   const [showConfirm, setShowConfirm] = useState<string | null>(null);
   const [justRedeemed, setJustRedeemed] = useState<string | null>(null);
+  const redeemTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (redeemTimerRef.current) {
+        clearTimeout(redeemTimerRef.current);
+      }
+    };
+  }, []);
 
   const handleRedeem = (rewardId: string, name: string, cost: number) => {
     const success = onRedeem(rewardId, name, cost);
     if (success) {
+      if (redeemTimerRef.current) {
+        clearTimeout(redeemTimerRef.current);
+      }
       setJustRedeemed(rewardId);
-      setTimeout(() => setJustRedeemed(null), 2000);
+      redeemTimerRef.current = setTimeout(() => setJustRedeemed(null), 2000);
     }
     setShowConfirm(null);
   };

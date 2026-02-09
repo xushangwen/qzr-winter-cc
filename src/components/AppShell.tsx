@@ -1,14 +1,18 @@
 "use client";
 
 import { useState, useMemo, useRef } from "react";
+import dynamic from "next/dynamic";
 import { useAppData } from "@/hooks/useAppData";
-import { getWeekDates, getPrevWeek, getNextWeek, getWeekStart } from "@/lib/date-utils";
-import SpaceBackground from "./SpaceBackground";
+import { getWeekDates, getPrevWeek, getNextWeek, getTodayStr } from "@/lib/date-utils";
 import WeekNavigator from "./WeekNavigator";
 import WeeklyGrid from "./WeeklyGrid";
 import RewardPanel from "./RewardPanel";
 import PunishmentPanel from "./PunishmentPanel";
 import StatsPanel from "./StatsPanel";
+
+const SpaceBackground = dynamic(() => import("./SpaceBackground"), {
+  ssr: false,
+});
 
 export default function AppShell() {
   const {
@@ -62,6 +66,10 @@ export default function AppShell() {
   // 本周统计
   const weekStars = getWeekStars(weekDates);
   const weekRate = getWeekRate(weekDates);
+  const isWeekFinished = useMemo(
+    () => weekDates[weekDates.length - 1] < getTodayStr(),
+    [weekDates]
+  );
 
   if (!isLoaded || !data) {
     return (
@@ -163,7 +171,7 @@ export default function AppShell() {
               redeemHistory={data.redeemHistory}
               onRedeem={handleRedeem}
             />
-            <PunishmentPanel weekRate={weekRate} />
+            <PunishmentPanel weekRate={weekRate} isWeekFinished={isWeekFinished} />
           </div>
         </div>
 
