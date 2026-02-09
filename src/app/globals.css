@@ -1,40 +1,39 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+SC:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
-/* ===== 极简白绿设计系统 ===== */
+/* ===== 设计系统：极简白绿 + 暗色模式 ===== */
 :root {
   --radius: 0.75rem;
   
-  /* 基础色 */
+  /* 字体 */
+  --font-sans: "IBM Plex Sans SC", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  --font-mono: "Space Grotesk", ui-monospace, monospace;
+  
+  /* === 亮色模式（默认）=== */
   --background: #f8f9fa;
   --foreground: #1a1a1a;
   --card: #ffffff;
   --card-foreground: #1a1a1a;
   
-  /* 主色 - 鲜绿 */
   --primary: #22c55e;
   --primary-foreground: #ffffff;
   --primary-light: #4ade80;
   --primary-subtle: #dcfce7;
   
-  /* 次要 */
   --secondary: #f1f5f9;
   --secondary-foreground: #475569;
   
-  /* 中性色 */
   --muted: #f1f5f9;
   --muted-foreground: #64748b;
   
-  /* 边框 */
   --border: #e2e8f0;
   --border-light: #f1f5f9;
   --input: #f8fafc;
   --ring: #22c55e;
   
-  /* 功能色 */
   --success: #22c55e;
   --success-subtle: #dcfce7;
   --warning: #f59e0b;
@@ -43,18 +42,50 @@
   --danger-subtle: #fee2e2;
 }
 
-@theme inline {
-  --color-background: #f8f9fa;
-  --color-foreground: #1a1a1a;
-  --color-primary: #22c55e;
-  --color-primary-light: #4ade80;
-  --color-primary-subtle: #dcfce7;
-  --color-card: #ffffff;
-  --color-muted: #64748b;
-  --color-border: #e2e8f0;
-  --color-border-light: #f1f5f9;
+/* === 暗色模式 === */
+.dark {
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+  --card: #141414;
+  --card-foreground: #fafafa;
   
-  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --primary: #22c55e;
+  --primary-foreground: #0a0a0a;
+  --primary-light: #4ade80;
+  --primary-subtle: #14532d;
+  
+  --secondary: #1c1c1c;
+  --secondary-foreground: #a1a1aa;
+  
+  --muted: #1c1c1c;
+  --muted-foreground: #71717a;
+  
+  --border: #27272a;
+  --border-light: #1c1c1c;
+  --input: #141414;
+  --ring: #22c55e;
+  
+  --success: #22c55e;
+  --success-subtle: #14532d;
+  --warning: #f59e0b;
+  --warning-subtle: #713f12;
+  --danger: #ef4444;
+  --danger-subtle: #7f1d1d;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-light: var(--primary-light);
+  --color-primary-subtle: var(--primary-subtle);
+  --color-card: var(--card);
+  --color-muted: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-border-light: var(--border-light);
+  
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
   
   --color-sidebar-ring: var(--ring);
   --color-sidebar-border: var(--border);
@@ -79,7 +110,7 @@
   --color-primary-foreground: var(--primary-foreground);
   --color-popover-foreground: var(--foreground);
   --color-popover: var(--card);
-  --color-card-foreground: var(--foreground);
+  --color-card-foreground: var(--card-foreground);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -95,40 +126,49 @@ html {
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #e2e8f0 transparent;
+  scrollbar-color: var(--border) transparent;
 }
 
 body {
   min-height: 100vh;
   overflow-x: hidden;
-  background: #f8f9fa;
-  color: #1a1a1a;
+  background: var(--background);
+  color: var(--foreground);
   font-family: var(--font-sans);
   line-height: 1.5;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* 数字字体 */
+/* 数字字体 - Space Grotesk */
 .num {
+  font-family: var(--font-mono);
   font-feature-settings: "tnum";
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.01em;
 }
 
-/* ===== 极简卡片 ===== */
+/* ===== 卡片样式 ===== */
 .card-minimal {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .card-elevated {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: 
     0 1px 2px rgba(0, 0, 0, 0.02),
     0 4px 12px rgba(0, 0, 0, 0.04);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.dark .card-minimal,
+.dark .card-elevated {
+  box-shadow: none;
 }
 
 /* ===== 按钮 ===== */
@@ -143,10 +183,10 @@ button:active {
 /* ===== 标签文字 ===== */
 .ui-kicker {
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #94a3b8;
+  color: var(--muted-foreground);
 }
 
 .ui-title {
@@ -156,20 +196,28 @@ button:active {
 
 /* ===== 选中高亮 ===== */
 ::selection {
-  background: rgba(34, 197, 94, 0.15);
-  color: #1a1a1a;
+  background: rgba(34, 197, 94, 0.2);
+  color: var(--foreground);
 }
 
-/* ===== 细线图表样式 ===== */
-.chart-line {
-  stroke: #22c55e;
-  stroke-width: 1.5;
-  fill: none;
+/* ===== 暗色模式切换按钮 ===== */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 
-.chart-bar {
-  background: #22c55e;
-  border-radius: 1px;
+.theme-toggle:hover {
+  background: var(--secondary);
+  color: var(--foreground);
 }
 
 /* ===== 响应式 ===== */

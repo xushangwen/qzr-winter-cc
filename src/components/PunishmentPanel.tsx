@@ -25,11 +25,11 @@ export default function PunishmentPanel({
     >
       {/* 标题 */}
       <div className="mb-3 flex items-center gap-2">
-        <i className={`ri-alarm-warning-line text-sm ${isTriggered ? "text-[#ef4444]" : "text-[#94a3b8]"}`} />
-        <h2 className="text-sm font-semibold text-[#1a1a1a]">惩罚机制</h2>
+        <i className={`ri-alarm-warning-line text-sm ${isTriggered ? "text-[var(--danger)]" : "text-[var(--muted-foreground)]"}`} />
+        <h2 className="text-sm font-semibold text-[var(--foreground)]">惩罚机制</h2>
       </div>
 
-      <p className="mb-3 text-xs text-[#64748b]">
+      <p className="mb-3 text-xs text-[var(--muted-foreground)]">
         周完成率低于 {WEEKLY_PASS_THRESHOLD}% 将触发惩罚
         {isPending && "（本周进行中）"}
       </p>
@@ -38,27 +38,27 @@ export default function PunishmentPanel({
       <div
         className={`mb-4 rounded-lg border p-3 ${
           isTriggered
-            ? "border-[#fee2e2] bg-[#fef2f2]"
+            ? "border-[var(--danger-subtle)] bg-[var(--danger-subtle)]/30"
             : isPending
-            ? "border-[#f1f5f9] bg-[#f8fafc]"
-            : "border-[#dcfce7] bg-[#f0fdf4]"
+            ? "border-[var(--border-light)] bg-[var(--secondary)]"
+            : "border-[var(--success-subtle)] bg-[var(--success-subtle)]/30"
         }`}
       >
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs text-[#64748b]">本周完成率</span>
+          <span className="text-xs text-[var(--muted-foreground)]">本周完成率</span>
           <span
             className={`num text-lg font-semibold ${
               isTriggered
-                ? "text-[#ef4444]"
+                ? "text-[var(--danger)]"
                 : isPending
-                ? "text-[#94a3b8]"
-                : "text-[#22c55e]"
+                ? "text-[var(--muted-foreground)]"
+                : "text-[var(--success)]"
             }`}
           >
             {weekRate}%
           </span>
         </div>
-        <Progress value={weekRate} className="h-1 bg-[#e2e8f0]" />
+        <Progress value={weekRate} className="h-1 bg-[var(--border)]" />
       </div>
 
       {/* 惩罚项列表 */}
@@ -68,14 +68,14 @@ export default function PunishmentPanel({
             key={punishment.id}
             className={`flex items-center gap-2 rounded-md px-3 py-2 text-xs ${
               isTriggered
-                ? "bg-[#fef2f2] text-[#ef4444]"
-                : "bg-[#f8fafc] text-[#64748b]"
+                ? "bg-[var(--danger-subtle)]/30 text-[var(--danger)]"
+                : "bg-[var(--secondary)] text-[var(--muted-foreground)]"
             }`}
           >
             <i className={`${punishment.icon} text-sm`} />
             <span>{punishment.name}</span>
             {isTriggered && (
-              <span className="ml-auto rounded bg-[#ef4444] px-1.5 py-0.5 text-[10px] text-white">
+              <span className="ml-auto rounded bg-[var(--danger)] px-1.5 py-0.5 text-[10px] text-white">
                 触发
               </span>
             )}

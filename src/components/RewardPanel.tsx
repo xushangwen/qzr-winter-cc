@@ -61,20 +61,20 @@ export default function RewardPanel({
     >
       {/* 标题 */}
       <div className="mb-4 flex items-center gap-2">
-        <i className="ri-gift-line text-sm text-[#22c55e]" />
-        <h2 className="text-sm font-semibold text-[#1a1a1a]">奖励兑换</h2>
+        <i className="ri-gift-line text-sm text-[var(--primary)]" />
+        <h2 className="text-sm font-semibold text-[var(--foreground)]">奖励兑换</h2>
       </div>
 
       {/* 星星余额 - 大数字风格 */}
-      <div className="mb-5 flex items-center gap-4 rounded-lg bg-[#f8fafc] p-4">
+      <div className="mb-5 flex items-center gap-4 rounded-lg bg-[var(--secondary)] p-4">
         <div className="flex-1">
-          <p className="text-xs text-[#64748b]">可用星星</p>
-          <p className="num text-3xl font-semibold text-[#1a1a1a]">
+          <p className="text-xs text-[var(--muted-foreground)]">可用星星</p>
+          <p className="num text-3xl font-semibold text-[var(--foreground)]">
             <AnimatedCounter value={availableStars} />
           </p>
         </div>
-        <div className="text-right text-xs text-[#64748b]">
-          <p>累计: <span className="num font-medium text-[#22c55e]">{totalEarned}</span></p>
+        <div className="text-right text-xs text-[var(--muted-foreground)]">
+          <p>累计: <span className="num font-medium text-[var(--primary)]">{totalEarned}</span></p>
           <p>已兑: <span className="num font-medium text-[#f472b6]">{totalSpent}</span></p>
         </div>
       </div>
@@ -91,25 +91,25 @@ export default function RewardPanel({
               key={reward.id}
               className={`rounded-lg border p-3 transition-all ${
                 canAfford
-                  ? "border-[#e2e8f0] bg-white"
-                  : "border-[#f1f5f9] bg-[#f8fafc] opacity-70"
+                  ? "border-[var(--border)] bg-[var(--card)]"
+                  : "border-[var(--border-light)] bg-[var(--secondary)] opacity-70"
               }`}
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-start gap-3">
                   <div className={`mt-0.5 flex h-8 w-8 items-center justify-center rounded-md ${
-                    canAfford ? "bg-[#dcfce7]" : "bg-[#f1f5f9]"
+                    canAfford ? "bg-[var(--primary-subtle)]" : "bg-[var(--border-light)]"
                   }`}>
-                    <i className={`${reward.icon} text-sm ${canAfford ? "text-[#22c55e]" : "text-[#94a3b8]"}`} />
+                    <i className={`${reward.icon} text-sm ${canAfford ? "text-[var(--primary)]" : "text-[var(--muted-foreground)]"}`} />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-[#1a1a1a]">{reward.name}</p>
-                    <p className="text-xs text-[#64748b]">{reward.description}</p>
+                    <p className="text-sm font-medium text-[var(--foreground)]">{reward.name}</p>
+                    <p className="text-xs text-[var(--muted-foreground)]">{reward.description}</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <span className={`num text-xs font-medium ${canAfford ? "text-[#22c55e]" : "text-[#94a3b8]"}`}>
+                  <span className={`num text-xs font-medium ${canAfford ? "text-[var(--primary)]" : "text-[var(--muted-foreground)]"}`}>
                     ★{reward.cost}
                   </span>
 
@@ -120,9 +120,9 @@ export default function RewardPanel({
                         initial={{ scale: 0.8, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.8, opacity: 0 }}
-                        className="flex h-7 w-7 items-center justify-center rounded-md bg-[#dcfce7]"
+                        className="flex h-7 w-7 items-center justify-center rounded-md bg-[var(--success-subtle)]"
                       >
-                        <i className="ri-check-line text-[#22c55e]" />
+                        <i className="ri-check-line text-[var(--success)]" />
                       </motion.div>
                     ) : (
                       <motion.div key="redeem">
@@ -132,8 +132,8 @@ export default function RewardPanel({
                           disabled={!canAfford}
                           className={`cursor-pointer text-xs h-7 ${
                             canAfford
-                              ? "bg-[#22c55e] text-white hover:bg-[#16a34a]"
-                              : "bg-[#f1f5f9] text-[#94a3b8]"
+                              ? "bg-[var(--primary)] text-[var(--primary-foreground)] hover:opacity-90"
+                              : "bg-[var(--border-light)] text-[var(--muted-foreground)]"
                           }`}
                         >
                           兑换
@@ -146,7 +146,7 @@ export default function RewardPanel({
 
               {/* 进度条 */}
               <div className="mt-2">
-                <Progress value={progress} className="h-1 bg-[#f1f5f9]" />
+                <Progress value={progress} className="h-1 bg-[var(--border-light)]" />
               </div>
             </div>
           );
@@ -155,8 +155,8 @@ export default function RewardPanel({
 
       {/* 兑换记录 */}
       {redeemHistory.length > 0 && (
-        <div className="mt-4 border-t border-[#e2e8f0] pt-3">
-          <p className="mb-2 text-xs font-medium text-[#64748b]">兑换记录</p>
+        <div className="mt-4 border-t border-[var(--border)] pt-3">
+          <p className="mb-2 text-xs font-medium text-[var(--muted-foreground)]">兑换记录</p>
           <div className="max-h-[100px] space-y-1.5 overflow-y-auto">
             {redeemHistory
               .slice()
@@ -164,10 +164,10 @@ export default function RewardPanel({
               .map((record) => (
                 <div
                   key={record.id}
-                  className="num flex items-center justify-between rounded-md bg-[#f8fafc] px-2.5 py-1.5 text-xs"
+                  className="num flex items-center justify-between rounded-md bg-[var(--secondary)] px-2.5 py-1.5 text-xs"
                 >
-                  <span className="text-[#475569]">{record.rewardName}</span>
-                  <div className="flex items-center gap-2 text-[#94a3b8]">
+                  <span className="text-[var(--secondary-foreground)]">{record.rewardName}</span>
+                  <div className="flex items-center gap-2 text-[var(--muted-foreground)]">
                     <span className="font-medium text-[#f472b6]">-★{record.cost}</span>
                     <span>{record.date}</span>
                   </div>
@@ -179,24 +179,24 @@ export default function RewardPanel({
 
       {/* 兑换确认 Dialog */}
       <Dialog open={!!confirmReward} onOpenChange={(open) => !open && setConfirmReward(null)}>
-        <DialogContent className="border-[#e2e8f0] bg-white">
+        <DialogContent className="border-[var(--border)] bg-[var(--card)]">
           <DialogHeader>
-            <DialogTitle className="text-[#1a1a1a]">确认兑换</DialogTitle>
-            <DialogDescription className="text-[#64748b]">
-              确定要花费 <span className="num font-medium text-[#22c55e]">★{confirmReward?.cost}</span> 星星兑换「{confirmReward?.name}」吗？
+            <DialogTitle className="text-[var(--foreground)]">确认兑换</DialogTitle>
+            <DialogDescription className="text-[var(--muted-foreground)]">
+              确定要花费 <span className="num font-medium text-[var(--primary)]">★{confirmReward?.cost}</span> 星星兑换「{confirmReward?.name}」吗？
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="gap-2">
             <Button 
               variant="outline" 
               onClick={() => setConfirmReward(null)} 
-              className="cursor-pointer border-[#e2e8f0] text-[#475569] hover:bg-[#f8fafc]"
+              className="cursor-pointer border-[var(--border)] text-[var(--secondary-foreground)] hover:bg-[var(--secondary)]"
             >
               取消
             </Button>
             <Button 
               onClick={handleRedeem} 
-              className="cursor-pointer bg-[#22c55e] text-white hover:bg-[#16a34a]"
+              className="cursor-pointer bg-[var(--primary)] text-[var(--primary-foreground)] hover:opacity-90"
             >
               确认兑换
             </Button>

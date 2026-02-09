@@ -15,6 +15,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import AnimatedCounter from "./ui/AnimatedCounter";
+import ThemeToggle from "./ThemeToggle";
 import PunishmentPanel from "./PunishmentPanel";
 import RewardPanel from "./RewardPanel";
 import StatsPanel from "./StatsPanel";
@@ -110,25 +111,31 @@ export default function AppShell() {
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
               <p className="ui-kicker mb-1">Daily Tracker</p>
-              <h1 className="ui-title text-2xl font-semibold text-[#1a1a1a] md:text-3xl">
+              <h1 className="ui-title text-2xl font-semibold text-[var(--foreground)] md:text-3xl">
                 乔子然寒假日程
               </h1>
-              <p className="mt-1 text-sm text-[#64748b]">
+              <p className="mt-1 text-sm text-[var(--muted-foreground)]">
                 每日打卡 · 周度复盘 · 积分兑换
               </p>
             </div>
+            
+            <div className="flex items-center gap-3">
 
-            {/* 星星余额 - 极简大数字 */}
-            <div className="card-minimal flex items-center gap-4 px-5 py-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#dcfce7]">
-                <span className="text-xl">⭐</span>
+              {/* 星星余额 - 极简大数字 */}
+              <div className="card-minimal flex items-center gap-4 px-5 py-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--primary-subtle)]">
+                  <span className="text-xl">⭐</span>
+                </div>
+                <div>
+                  <p className="text-xs text-[var(--muted-foreground)]">可用星星</p>
+                  <p className="num text-2xl font-semibold text-[var(--foreground)]">
+                    <AnimatedCounter value={availableStars} />
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="text-xs text-[#64748b]">可用星星</p>
-                <p className="num text-2xl font-semibold text-[#1a1a1a]">
-                  <AnimatedCounter value={availableStars} />
-                </p>
-              </div>
+              
+              {/* 主题切换 */}
+              <ThemeToggle />
             </div>
           </div>
         </motion.div>
@@ -181,12 +188,12 @@ export default function AppShell() {
         </div>
 
         {/* 底部操作 */}
-        <footer className="mt-10 border-t border-[#e2e8f0] pt-6 text-center">
+        <footer className="mt-10 border-t border-[var(--border)] pt-6 text-center">
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Button 
               variant="outline" 
               onClick={handleExport} 
-              className="cursor-pointer gap-2 rounded-lg border-[#e2e8f0] bg-white text-[#475569] hover:bg-[#f8fafc] hover:text-[#1a1a1a]"
+              className="cursor-pointer gap-2 rounded-lg border-[var(--border)] bg-[var(--card)] text-[var(--secondary-foreground)] hover:bg-[var(--secondary)] hover:text-[var(--foreground)]"
             >
               <i className="ri-download-2-line" />
               导出数据
@@ -194,7 +201,7 @@ export default function AppShell() {
             <Button 
               variant="outline" 
               onClick={handleFileImport} 
-              className="cursor-pointer gap-2 rounded-lg border-[#e2e8f0] bg-white text-[#475569] hover:bg-[#f8fafc] hover:text-[#1a1a1a]"
+              className="cursor-pointer gap-2 rounded-lg border-[var(--border)] bg-[var(--card)] text-[var(--secondary-foreground)] hover:bg-[var(--secondary)] hover:text-[var(--foreground)]"
             >
               <i className="ri-upload-2-line" />
               导入数据
@@ -207,23 +214,23 @@ export default function AppShell() {
               className="hidden"
             />
           </div>
-          <p className="mt-4 text-xs text-[#94a3b8]">坚持每天完成一个小目标</p>
+          <p className="mt-4 text-xs text-[var(--muted-foreground)]">坚持每天完成一个小目标</p>
         </footer>
       </div>
 
       {/* 导入结果 Dialog */}
       <Dialog open={importResult.open} onOpenChange={(open) => setImportResult((prev) => ({ ...prev, open }))}>
-        <DialogContent className="border-[#e2e8f0] bg-white">
+        <DialogContent className="border-[var(--border)] bg-[var(--card)]">
           <DialogHeader>
-            <DialogTitle className="text-[#1a1a1a]">{importResult.success ? "导入成功" : "导入失败"}</DialogTitle>
-            <DialogDescription className="text-[#64748b]">
+            <DialogTitle className="text-[var(--foreground)]">{importResult.success ? "导入成功" : "导入失败"}</DialogTitle>
+            <DialogDescription className="text-[var(--muted-foreground)]">
               {importResult.success ? "数据已成功导入！" : "导入失败，文件格式不正确。"}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button 
               onClick={() => setImportResult({ open: false, success: false })} 
-              className="cursor-pointer bg-[#22c55e] text-white hover:bg-[#16a34a]"
+              className="cursor-pointer bg-[var(--primary)] text-[var(--primary-foreground)] hover:opacity-90"
             >
               确定
             </Button>

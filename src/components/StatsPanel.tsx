@@ -60,8 +60,8 @@ export default function StatsPanel({
     >
       {/* 标题 */}
       <div className="mb-4 flex items-center gap-2">
-        <i className="ri-bar-chart-line text-sm text-[#22c55e]" />
-        <h2 className="text-sm font-semibold text-[#1a1a1a]">本周统计</h2>
+        <i className="ri-bar-chart-line text-sm text-[var(--primary)]" />
+        <h2 className="text-sm font-semibold text-[var(--foreground)]">本周统计</h2>
       </div>
 
       {/* 圆形进度环 + 数字 */}
@@ -70,41 +70,43 @@ export default function StatsPanel({
           progress={weekRate}
           size={72}
           strokeWidth={5}
-          color="#22c55e"
+          color="var(--primary)"
         >
-          <span className="num text-base font-semibold text-[#1a1a1a]">
+          <span className="num text-base font-semibold text-[var(--foreground)]">
             {weekRate}%
           </span>
         </ProgressRing>
 
         <div className="grid flex-1 grid-cols-2 gap-3">
-          <div className="rounded-lg bg-[#f8fafc] p-3 text-center">
-            <p className="num text-lg font-semibold text-[#1a1a1a]">{weekStars}</p>
-            <p className="mt-0.5 text-[10px] text-[#64748b]">本周星星</p>
+          <div className="rounded-lg bg-[var(--secondary)] p-3 text-center">
+            <p className="num text-lg font-semibold text-[var(--foreground)]">{weekStars}</p>
+            <p className="mt-0.5 text-[10px] text-[var(--muted-foreground)]">本周星星</p>
           </div>
-          <div className="rounded-lg bg-[#f8fafc] p-3 text-center">
-            <p className="num text-lg font-semibold text-[#1a1a1a]">
+          <div className="rounded-lg bg-[var(--secondary)] p-3 text-center">
+            <p className="num text-lg font-semibold text-[var(--foreground)]">
               {taskStats.reduce((sum, task) => sum + task.totalCount, 0)}
             </p>
-            <p className="mt-0.5 text-[10px] text-[#64748b]">打卡次数</p>
+            <p className="mt-0.5 text-[10px] text-[var(--muted-foreground)]">打卡次数</p>
           </div>
         </div>
       </div>
 
       {/* 每日星星分布 - 细线柱状图 */}
       <div className="mb-5">
-        <p className="mb-2 text-xs font-medium text-[#64748b]">每日星星</p>
+        <p className="mb-2 text-xs font-medium text-[var(--muted-foreground)]">每日星星</p>
         <div className="flex h-[60px] items-end gap-1">
           {dailyStars.map((stars, index) => (
             <div key={weekDates[index]} className="flex flex-1 flex-col items-center gap-1">
               <motion.div
-                className="w-full rounded-sm bg-[#22c55e]"
+                className="w-full rounded-sm"
+                style={{ backgroundColor: "var(--primary)" }}
                 initial={{ height: 0 }}
                 animate={{ height: `${(stars / maxDailyStars) * 44}px` }}
                 transition={{ duration: 0.4, delay: index * 0.03 }}
-                style={{ minHeight: stars > 0 ? "2px" : "0", opacity: stars > 0 ? 1 : 0.2 }}
               />
-              <span className="text-[10px] text-[#94a3b8]">{["一", "二", "三", "四", "五", "六", "日"][index]}</span>
+              <span className="text-[10px] text-[var(--muted-foreground)]">
+                {["一", "二", "三", "四", "五", "六", "日"][index]}
+              </span>
             </div>
           ))}
         </div>
@@ -112,21 +114,22 @@ export default function StatsPanel({
 
       {/* 任务排行 - 极简进度条 */}
       <div>
-        <p className="mb-2 text-xs font-medium text-[#64748b]">任务完成排行</p>
+        <p className="mb-2 text-xs font-medium text-[var(--muted-foreground)]">任务完成排行</p>
         <div className="space-y-2">
           {sortedStats.map((task, index) => (
             <div key={task.id} className="flex items-center gap-3 text-sm">
-              <span className="num w-4 text-right text-[10px] text-[#94a3b8]">{index + 1}</span>
-              <i className={`${task.icon} text-xs text-[#94a3b8]`} />
-              <span className="w-16 truncate text-xs text-[#475569]">{task.name}</span>
+              <span className="num w-4 text-right text-[10px] text-[var(--muted-foreground)]">
+                {index + 1}
+              </span>
+              <i className={`${task.icon} text-xs text-[var(--muted-foreground)]`} />
+              <span className="w-16 truncate text-xs text-[var(--secondary-foreground)]">
+                {task.name}
+              </span>
               <div className="flex-1">
-                <Progress
-                  value={task.rate}
-                  className="h-1 bg-[#f1f5f9]"
-                />
+                <Progress value={task.rate} className="h-1 bg-[var(--border-light)]" />
               </div>
               <div className="num flex min-w-[48px] items-center justify-end gap-1 text-[10px]">
-                <span className="text-[#22c55e]">⭐{task.goldCount}</span>
+                <span className="text-[var(--primary)]">⭐{task.goldCount}</span>
                 <span className="text-[#f472b6]">🌸{task.pinkCount}</span>
               </div>
             </div>

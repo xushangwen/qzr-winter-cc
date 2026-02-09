@@ -10,7 +10,7 @@ interface StarCellProps {
   isToday: boolean;
 }
 
-/* 极简三态切换 */
+/* 极简三态切换 - 支持暗色模式 */
 export default function StarCell({ status, onToggle, isToday }: StarCellProps) {
   const [animateKey, setAnimateKey] = useState(0);
 
@@ -32,12 +32,12 @@ export default function StarCell({ status, onToggle, isToday }: StarCellProps) {
       aria-label={ariaLabel}
       className={`
         group relative flex h-10 w-full cursor-pointer items-center justify-center rounded-md border transition-all duration-150 active:scale-95
-        ${isToday ? "ring-1 ring-[#22c55e]/30" : ""}
+        ${isToday ? "ring-1 ring-[var(--primary)]/30" : ""}
         ${
           status === "none"
-            ? "border-[#e2e8f0] bg-white hover:border-[#22c55e]/40"
+            ? "border-[var(--border)] bg-[var(--card)] hover:border-[var(--primary)]/40"
             : status === "gold"
-            ? "border-[#22c55e]/30 bg-[#dcfce7]"
+            ? "border-[var(--primary)]/30 bg-[var(--primary-subtle)]"
             : "border-[#f472b6]/30 bg-[#fce7f3]"
         }
       `}
@@ -49,7 +49,7 @@ export default function StarCell({ status, onToggle, isToday }: StarCellProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="text-[#cbd5e1]"
+            className="text-[var(--border)]"
           >
             <i className="ri-add-line text-base" />
           </motion.div>
