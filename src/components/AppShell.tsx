@@ -2,9 +2,18 @@
 
 import { useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import { motion } from "framer-motion";
 import { useAppData } from "@/hooks/useAppData";
 import { getNextWeek, getPrevWeek, getTodayStr, getWeekDates } from "@/lib/date-utils";
-import GlowCard from "./ui/GlowCard";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import AnimatedCounter from "./ui/AnimatedCounter";
 import PunishmentPanel from "./PunishmentPanel";
 import RewardPanel from "./RewardPanel";
@@ -35,6 +44,7 @@ export default function AppShell() {
 
   const [currentDate, setCurrentDate] = useState(new Date());
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [importResult, setImportResult] = useState<{ open: boolean; success: boolean }>({ open: false, success: false });
 
   const handleFileImport = () => {
     fileInputRef.current?.click();
@@ -49,7 +59,7 @@ export default function AppShell() {
       const result = ev.target?.result;
       if (typeof result === "string") {
         const success = handleImport(result);
-        alert(success ? "数据导入成功！" : "导入失败，文件格式不正确");
+        setImportResult({ open: true, success });
       }
     };
 
@@ -75,10 +85,10 @@ export default function AppShell() {
   if (!isLoaded || !data) {
     return (
       <div className="flex min-h-screen items-center justify-center px-4">
-        <div className="glass-card px-7 py-8">
-          <div className="flex flex-col items-center gap-3">
-            <div className="h-10 w-10 animate-spin rounded-full border-2 border-primary/20 border-t-primary" />
-            <p className="text-base text-white/50">加载中...</p>
+        <div className="card-minimal px-8 py-10">
+          <div className="flex flex-col items-center gap-4">
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#22c55e]/20 border-t-[#22c55e]" />
+            <p className="text-sm text-[#64748b]">加载中...</p>
           </div>
         </div>
       </div>
@@ -90,32 +100,41 @@ export default function AppShell() {
       <SpaceBackground />
 
       <div className="relative z-10 mx-auto w-full max-w-[1200px] px-4 py-6 sm:px-6 md:py-10">
-        {/* 顶部 Header */}
-        <GlowCard glow className="mb-5 px-5 py-5 md:mb-7 md:px-7 md:py-7">
+        {/* 顶部 Header - 极简风格 */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="mb-6 md:mb-8"
+        >
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="ui-kicker">Daily Growth Dashboard</p>
-              <h1 className="ui-title mt-1 text-3xl font-semibold text-white md:text-4xl">
+              <p className="ui-kicker mb-1">Daily Tracker</p>
+              <h1 className="ui-title text-2xl font-semibold text-[#1a1a1a] md:text-3xl">
                 乔子然寒假日程
               </h1>
-              <p className="mt-2 text-[15px] text-white/50 md:text-base">
-                每日打卡、周度复盘、积分兑换，一目了然。
+              <p className="mt-1 text-sm text-[#64748b]">
+                每日打卡 · 周度复盘 · 积分兑换
               </p>
             </div>
 
-            {/* 星星余额卡片 */}
-            <div className="glow-purple rounded-2xl border border-primary/25 bg-gradient-to-r from-primary/15 to-accent-blue/10 px-4 py-3.5 md:min-w-[220px]">
-              <p className="text-sm text-white/50">可用星星余额</p>
-              <p className="num mt-1.5 flex items-center gap-2 text-3xl font-semibold text-primary-light md:text-4xl">
-                <span>⭐</span>
-                <AnimatedCounter value={availableStars} />
-              </p>
+            {/* 星星余额 - 极简大数字 */}
+            <div className="card-minimal flex items-center gap-4 px-5 py-4">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#dcfce7]">
+                <span className="text-xl">⭐</span>
+              </div>
+              <div>
+                <p className="text-xs text-[#64748b]">可用星星</p>
+                <p className="num text-2xl font-semibold text-[#1a1a1a]">
+                  <AnimatedCounter value={availableStars} />
+                </p>
+              </div>
             </div>
           </div>
-        </GlowCard>
+        </motion.div>
 
         {/* 周导航 */}
-        <div className="mb-4 md:mb-5">
+        <div className="mb-5">
           <WeekNavigator
             weekDates={weekDates}
             onPrev={() => setCurrentDate(getPrevWeek(currentDate))}
@@ -125,10 +144,10 @@ export default function AppShell() {
           />
         </div>
 
-        {/* Bento Grid 主体 */}
+        {/* 主体布局 */}
         <div className="grid grid-cols-1 gap-5 xl:grid-cols-12">
-          {/* 左侧：打卡表格 + 图例 */}
-          <section className="space-y-4 xl:col-span-8">
+          {/* 左侧：打卡表格 */}
+          <section className="xl:col-span-8">
             <WeeklyGrid
               weekDates={weekDates}
               records={data.records}
@@ -136,30 +155,10 @@ export default function AppShell() {
               getDayStars={getDayStars}
               getDayRate={getDayRate}
             />
-
-            {/* 图例说明 */}
-            <div className="glass-card px-4 py-3.5">
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-white/55">
-                <div className="flex items-center gap-2">
-                  <span className="text-lg">⭐</span>
-                  <span>金星 = 2分</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-lg">🌸</span>
-                  <span>粉花 = 1分</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="flex h-4 w-4 items-center justify-center rounded bg-white/[0.06]">
-                    <i className="ri-add-line text-[10px] text-white/30" />
-                  </div>
-                  <span>未完成</span>
-                </div>
-              </div>
-            </div>
           </section>
 
           {/* 右侧：统计 + 奖励 */}
-          <aside className="space-y-4 xl:col-span-4">
+          <aside className="space-y-5 xl:col-span-4">
             <StatsPanel
               data={data}
               weekDates={weekDates}
@@ -176,28 +175,30 @@ export default function AppShell() {
           </aside>
         </div>
 
-        {/* 惩罚面板 - 全宽 */}
+        {/* 惩罚面板 */}
         <div className="mt-5">
           <PunishmentPanel weekRate={weekRate} isWeekFinished={isWeekFinished} />
         </div>
 
         {/* 底部操作 */}
-        <footer className="mt-9 space-y-4 text-center">
+        <footer className="mt-10 border-t border-[#e2e8f0] pt-6 text-center">
           <div className="flex flex-wrap items-center justify-center gap-3">
-            <button
-              onClick={handleExport}
-              className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-white/[0.06] bg-white/[0.04] px-4 py-2.5 text-sm font-medium text-white/70 hover:bg-white/[0.08]"
+            <Button 
+              variant="outline" 
+              onClick={handleExport} 
+              className="cursor-pointer gap-2 rounded-lg border-[#e2e8f0] bg-white text-[#475569] hover:bg-[#f8fafc] hover:text-[#1a1a1a]"
             >
               <i className="ri-download-2-line" />
               导出数据
-            </button>
-            <button
-              onClick={handleFileImport}
-              className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-white/[0.06] bg-white/[0.04] px-4 py-2.5 text-sm font-medium text-white/70 hover:bg-white/[0.08]"
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={handleFileImport} 
+              className="cursor-pointer gap-2 rounded-lg border-[#e2e8f0] bg-white text-[#475569] hover:bg-[#f8fafc] hover:text-[#1a1a1a]"
             >
               <i className="ri-upload-2-line" />
               导入数据
-            </button>
+            </Button>
             <input
               ref={fileInputRef}
               type="file"
@@ -206,9 +207,29 @@ export default function AppShell() {
               className="hidden"
             />
           </div>
-          <p className="text-sm text-white/35">坚持每天完成一个小目标，就是很大的进步。</p>
+          <p className="mt-4 text-xs text-[#94a3b8]">坚持每天完成一个小目标</p>
         </footer>
       </div>
+
+      {/* 导入结果 Dialog */}
+      <Dialog open={importResult.open} onOpenChange={(open) => setImportResult((prev) => ({ ...prev, open }))}>
+        <DialogContent className="border-[#e2e8f0] bg-white">
+          <DialogHeader>
+            <DialogTitle className="text-[#1a1a1a]">{importResult.success ? "导入成功" : "导入失败"}</DialogTitle>
+            <DialogDescription className="text-[#64748b]">
+              {importResult.success ? "数据已成功导入！" : "导入失败，文件格式不正确。"}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button 
+              onClick={() => setImportResult({ open: false, success: false })} 
+              className="cursor-pointer bg-[#22c55e] text-white hover:bg-[#16a34a]"
+            >
+              确定
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

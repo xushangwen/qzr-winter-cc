@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { STAR_POINTS, TASKS } from "@/lib/constants";
 import { AppData, CheckStatus } from "@/lib/types";
-import GlowCard from "./ui/GlowCard";
+import { Progress } from "@/components/ui/progress";
 import ProgressRing from "./ui/ProgressRing";
 
 interface StatsPanelProps {
@@ -52,91 +52,87 @@ export default function StatsPanel({
   const maxDailyStars = Math.max(...dailyStars, 1);
 
   return (
-    <GlowCard delay={0.08} className="p-4 md:p-5">
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: 0.05 }}
+      className="card-minimal p-5"
+    >
+      {/* 标题 */}
       <div className="mb-4 flex items-center gap-2">
-        <i className="ri-bar-chart-2-line text-lg text-primary" />
-        <h2 className="text-base font-semibold text-white md:text-lg">本周统计</h2>
+        <i className="ri-bar-chart-line text-sm text-[#22c55e]" />
+        <h2 className="text-sm font-semibold text-[#1a1a1a]">本周统计</h2>
       </div>
 
-      {/* 圆形进度环 + 数字卡片 */}
+      {/* 圆形进度环 + 数字 */}
       <div className="mb-5 flex items-center gap-4">
         <ProgressRing
           progress={weekRate}
-          size={90}
-          strokeWidth={7}
-          colors={weekRate >= 80 ? ["#10b981", "#06b6d4"] : weekRate >= 50 ? ["#f59e0b", "#8b5cf6"] : ["#ef4444", "#f59e0b"]}
+          size={72}
+          strokeWidth={5}
+          color="#22c55e"
         >
-          <span className={`num text-lg font-bold ${weekRate >= 80 ? "text-accent-green" : weekRate >= 50 ? "text-accent-gold" : "text-accent-red"}`}>
+          <span className="num text-base font-semibold text-[#1a1a1a]">
             {weekRate}%
           </span>
         </ProgressRing>
 
-        <div className="grid flex-1 grid-cols-2 gap-2">
-          <div className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-3 text-center">
-            <p className="num text-2xl font-semibold text-accent-gold">{weekStars}</p>
-            <p className="mt-1 text-xs text-white/40">本周星星</p>
+        <div className="grid flex-1 grid-cols-2 gap-3">
+          <div className="rounded-lg bg-[#f8fafc] p-3 text-center">
+            <p className="num text-lg font-semibold text-[#1a1a1a]">{weekStars}</p>
+            <p className="mt-0.5 text-[10px] text-[#64748b]">本周星星</p>
           </div>
-          <div className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-3 text-center">
-            <p className="num text-2xl font-semibold text-primary-light">
+          <div className="rounded-lg bg-[#f8fafc] p-3 text-center">
+            <p className="num text-lg font-semibold text-[#1a1a1a]">
               {taskStats.reduce((sum, task) => sum + task.totalCount, 0)}
             </p>
-            <p className="mt-1 text-xs text-white/40">打卡次数</p>
+            <p className="mt-0.5 text-[10px] text-[#64748b]">打卡次数</p>
           </div>
         </div>
       </div>
 
-      {/* 渐变柱状图 */}
+      {/* 每日星星分布 - 细线柱状图 */}
       <div className="mb-5">
-        <p className="mb-2 text-sm font-medium text-white/55">每日星星分布</p>
-        <div className="flex h-[94px] items-end gap-1.5">
+        <p className="mb-2 text-xs font-medium text-[#64748b]">每日星星</p>
+        <div className="flex h-[60px] items-end gap-1">
           {dailyStars.map((stars, index) => (
             <div key={weekDates[index]} className="flex flex-1 flex-col items-center gap-1">
               <motion.div
-                className="w-full rounded-t-md bg-gradient-to-t from-primary to-accent-cyan"
+                className="w-full rounded-sm bg-[#22c55e]"
                 initial={{ height: 0 }}
-                animate={{ height: `${(stars / maxDailyStars) * 68}px` }}
-                transition={{ duration: 0.45, delay: index * 0.04 }}
-                style={{ minHeight: stars > 0 ? "6px" : "0" }}
+                animate={{ height: `${(stars / maxDailyStars) * 44}px` }}
+                transition={{ duration: 0.4, delay: index * 0.03 }}
+                style={{ minHeight: stars > 0 ? "2px" : "0", opacity: stars > 0 ? 1 : 0.2 }}
               />
-              <span className="text-xs text-white/35">{["一", "二", "三", "四", "五", "六", "日"][index]}</span>
+              <span className="text-[10px] text-[#94a3b8]">{["一", "二", "三", "四", "五", "六", "日"][index]}</span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* 任务排行 - 发光进度条 */}
+      {/* 任务排行 - 极简进度条 */}
       <div>
-        <p className="mb-2 text-sm font-medium text-white/55">任务完成排行</p>
-        <div className="space-y-2.5">
+        <p className="mb-2 text-xs font-medium text-[#64748b]">任务完成排行</p>
+        <div className="space-y-2">
           {sortedStats.map((task, index) => (
-            <div key={task.id} className="flex items-center gap-2 text-sm">
-              <span className="num w-5 text-right text-xs text-white/35">{index + 1}</span>
-              <i className={`${task.icon} text-sm text-white/45`} />
-              <span className="w-24 truncate text-white/70">{task.name}</span>
-              <div className="h-2 flex-1 overflow-hidden rounded-full bg-white/[0.06]">
-                <motion.div
-                  className={`h-full rounded-full ${
-                    task.rate >= 80
-                      ? "bg-gradient-to-r from-accent-green to-accent-cyan"
-                      : task.rate >= 50
-                      ? "bg-gradient-to-r from-accent-gold to-primary"
-                      : task.rate > 0
-                      ? "bg-gradient-to-r from-accent-red to-accent-gold"
-                      : "bg-white/[0.04]"
-                  }`}
-                  initial={{ width: 0 }}
-                  animate={{ width: `${task.rate}%` }}
-                  transition={{ duration: 0.55, delay: index * 0.04 }}
+            <div key={task.id} className="flex items-center gap-3 text-sm">
+              <span className="num w-4 text-right text-[10px] text-[#94a3b8]">{index + 1}</span>
+              <i className={`${task.icon} text-xs text-[#94a3b8]`} />
+              <span className="w-16 truncate text-xs text-[#475569]">{task.name}</span>
+              <div className="flex-1">
+                <Progress
+                  value={task.rate}
+                  className="h-1 bg-[#f1f5f9]"
                 />
               </div>
-              <div className="num flex min-w-[68px] items-center justify-end gap-1 text-xs md:text-sm">
-                <span className="text-accent-gold">⭐{task.goldCount}</span>
-                <span className="text-accent-pink">🌸{task.pinkCount}</span>
+              <div className="num flex min-w-[48px] items-center justify-end gap-1 text-[10px]">
+                <span className="text-[#22c55e]">⭐{task.goldCount}</span>
+                <span className="text-[#f472b6]">🌸{task.pinkCount}</span>
               </div>
             </div>
           ))}
         </div>
       </div>
-    </GlowCard>
+    </motion.div>
   );
 }

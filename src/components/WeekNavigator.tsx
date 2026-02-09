@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { formatWeekRange } from "@/lib/date-utils";
+import { Button } from "@/components/ui/button";
 
 interface WeekNavigatorProps {
   weekDates: string[];
@@ -20,45 +21,51 @@ export default function WeekNavigator({
 }: WeekNavigatorProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: -10 }}
+      initial={{ opacity: 0, y: -4 }}
       animate={{ opacity: 1, y: 0 }}
-      className="glass-card flex items-center justify-between gap-3 p-3.5 md:p-4"
+      className="card-minimal flex items-center justify-between gap-3 p-3 md:p-4"
     >
       {/* 左右箭头 */}
-      <div className="flex items-center gap-2">
-        <button
+      <div className="flex items-center gap-1">
+        <Button
+          variant="outline"
+          size="icon"
           onClick={onPrev}
-          className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl border border-white/[0.06] bg-white/[0.04] text-white/60 hover:bg-white/[0.08] hover:text-white/80 md:h-11 md:w-11"
+          className="h-8 w-8 cursor-pointer rounded-lg border-[#e2e8f0] bg-white text-[#475569] hover:bg-[#f8fafc] hover:text-[#1a1a1a]"
           aria-label="上一周"
         >
-          <i className="ri-arrow-left-s-line text-xl" />
-        </button>
-        <button
+          <i className="ri-arrow-left-s-line text-lg" />
+        </Button>
+        <Button
+          variant="outline"
+          size="icon"
           onClick={onNext}
-          className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl border border-white/[0.06] bg-white/[0.04] text-white/60 hover:bg-white/[0.08] hover:text-white/80 md:h-11 md:w-11"
+          className="h-8 w-8 cursor-pointer rounded-lg border-[#e2e8f0] bg-white text-[#475569] hover:bg-[#f8fafc] hover:text-[#1a1a1a]"
           aria-label="下一周"
         >
-          <i className="ri-arrow-right-s-line text-xl" />
-        </button>
+          <i className="ri-arrow-right-s-line text-lg" />
+        </Button>
       </div>
 
       {/* 日期范围 */}
       <div className="text-center">
-        <p className="ui-kicker">Week Range</p>
-        <p className="num text-sm font-semibold text-white/90 md:text-base">{formatWeekRange(weekDates)}</p>
+        <p className="text-xs text-[#94a3b8]">时间范围</p>
+        <p className="num text-sm font-medium text-[#1a1a1a]">{formatWeekRange(weekDates)}</p>
       </div>
 
       {/* 本周/回到本周 */}
-      <div className="min-w-[86px] text-right">
+      <div className="min-w-[72px] text-right">
         {!isCurrentWeek ? (
-          <button
+          <Button
             onClick={onToday}
-            className="cursor-pointer rounded-lg bg-gradient-to-r from-primary to-accent-blue px-3 py-1.5 text-sm font-medium text-white shadow-sm hover:opacity-90"
+            className="cursor-pointer rounded-lg bg-[#22c55e] text-white text-sm hover:bg-[#16a34a] h-8"
+            size="sm"
           >
             回到本周
-          </button>
+          </Button>
         ) : (
-          <span className="inline-flex rounded-lg border border-primary/30 bg-primary/15 px-2.5 py-1 text-sm font-medium text-primary-light">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#dcfce7] px-2.5 py-1 text-xs font-medium text-[#16a34a]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#22c55e]" />
             本周
           </span>
         )}

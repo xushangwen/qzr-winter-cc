@@ -10,7 +10,7 @@ interface StarCellProps {
   isToday: boolean;
 }
 
-/* 三态发光切换：空态(暗) → 金星(金色光晕) → 粉花(粉色光晕) */
+/* 极简三态切换 */
 export default function StarCell({ status, onToggle, isToday }: StarCellProps) {
   const [animateKey, setAnimateKey] = useState(0);
 
@@ -31,14 +31,14 @@ export default function StarCell({ status, onToggle, isToday }: StarCellProps) {
       onClick={handleClick}
       aria-label={ariaLabel}
       className={`
-        group relative flex min-h-[52px] w-full aspect-square cursor-pointer items-center justify-center rounded-xl border transition-all active:scale-[0.96]
-        ${isToday ? "ring-2 ring-primary/40" : ""}
+        group relative flex h-10 w-full cursor-pointer items-center justify-center rounded-md border transition-all duration-150 active:scale-95
+        ${isToday ? "ring-1 ring-[#22c55e]/30" : ""}
         ${
           status === "none"
-            ? "border-white/[0.06] bg-white/[0.03] hover:bg-white/[0.06]"
+            ? "border-[#e2e8f0] bg-white hover:border-[#22c55e]/40"
             : status === "gold"
-            ? "border-amber-400/25 bg-amber-400/[0.08] glow-gold"
-            : "border-pink-400/25 bg-pink-400/[0.08] glow-pink"
+            ? "border-[#22c55e]/30 bg-[#dcfce7]"
+            : "border-[#f472b6]/30 bg-[#fce7f3]"
         }
       `}
     >
@@ -49,29 +49,29 @@ export default function StarCell({ status, onToggle, isToday }: StarCellProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="text-white/20 transition-colors group-hover:text-white/40"
+            className="text-[#cbd5e1]"
           >
-            <i className="ri-add-line text-xl" />
+            <i className="ri-add-line text-base" />
           </motion.div>
         ) : status === "gold" ? (
           <motion.span
             key={`gold-${animateKey}`}
-            initial={{ scale: 0.5, opacity: 0 }}
+            initial={{ scale: 0.6, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 400, damping: 15 }}
-            className="text-2xl"
+            transition={{ type: "spring", stiffness: 500, damping: 15 }}
+            className="text-base"
           >
             ⭐
           </motion.span>
         ) : (
           <motion.span
             key={`pink-${animateKey}`}
-            initial={{ scale: 0.5, opacity: 0 }}
+            initial={{ scale: 0.6, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 400, damping: 15 }}
-            className="text-2xl"
+            transition={{ type: "spring", stiffness: 500, damping: 15 }}
+            className="text-base"
           >
             🌸
           </motion.span>

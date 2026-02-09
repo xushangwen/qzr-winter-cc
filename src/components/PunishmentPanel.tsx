@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { PUNISHMENTS, WEEKLY_PASS_THRESHOLD } from "@/lib/constants";
-import GlowCard from "./ui/GlowCard";
+import { Progress } from "@/components/ui/progress";
 
 interface PunishmentPanelProps {
   weekRate: number;
@@ -17,78 +17,71 @@ export default function PunishmentPanel({
   const isPending = !isWeekFinished;
 
   return (
-    <GlowCard delay={0.24} className={`p-4 md:p-5 ${isTriggered ? "glow-red" : ""}`}>
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: 0.15 }}
+      className="card-minimal p-5"
+    >
+      {/* 标题 */}
       <div className="mb-3 flex items-center gap-2">
-        <i className={`ri-alarm-warning-line text-lg ${isTriggered ? "text-accent-red" : "text-white/40"}`} />
-        <h2 className="text-base font-semibold text-white md:text-lg">惩罚机制</h2>
+        <i className={`ri-alarm-warning-line text-sm ${isTriggered ? "text-[#ef4444]" : "text-[#94a3b8]"}`} />
+        <h2 className="text-sm font-semibold text-[#1a1a1a]">惩罚机制</h2>
       </div>
 
-      <p className="mb-3 text-sm text-white/45">
+      <p className="mb-3 text-xs text-[#64748b]">
         周完成率低于 {WEEKLY_PASS_THRESHOLD}% 将触发惩罚
-        {isPending ? "（本周进行中，周末统一判定）" : ""}
+        {isPending && "（本周进行中）"}
       </p>
 
       {/* 完成率指示器 */}
       <div
-        className={`mb-4 rounded-2xl border p-3 ${
+        className={`mb-4 rounded-lg border p-3 ${
           isTriggered
-            ? "border-accent-red/20 bg-accent-red/[0.06]"
+            ? "border-[#fee2e2] bg-[#fef2f2]"
             : isPending
-            ? "border-white/[0.06] bg-white/[0.03]"
-            : "border-accent-green/20 bg-accent-green/[0.06]"
+            ? "border-[#f1f5f9] bg-[#f8fafc]"
+            : "border-[#dcfce7] bg-[#f0fdf4]"
         }`}
       >
-        <div className="flex items-center justify-between">
-          <span className="text-sm text-white/45">本周完成率</span>
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs text-[#64748b]">本周完成率</span>
           <span
-            className={`num text-2xl font-semibold ${
+            className={`num text-lg font-semibold ${
               isTriggered
-                ? "text-accent-red"
+                ? "text-[#ef4444]"
                 : isPending
-                ? "text-white/35"
-                : "text-accent-green"
+                ? "text-[#94a3b8]"
+                : "text-[#22c55e]"
             }`}
           >
             {weekRate}%
           </span>
         </div>
-        <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
-          <motion.div
-            className={`h-full rounded-full ${
-              isTriggered
-                ? "bg-accent-red"
-                : isPending
-                ? "bg-white/[0.08]"
-                : "bg-gradient-to-r from-accent-green to-accent-cyan"
-            }`}
-            initial={{ width: 0 }}
-            animate={{ width: `${weekRate}%` }}
-            transition={{ duration: 0.7 }}
-          />
-        </div>
+        <Progress value={weekRate} className="h-1 bg-[#e2e8f0]" />
       </div>
 
-      {/* 惩罚项列表 - 横向排列（全宽时更好看） */}
+      {/* 惩罚项列表 */}
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
         {PUNISHMENTS.map((punishment) => (
           <div
             key={punishment.id}
-            className={`flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm ${
+            className={`flex items-center gap-2 rounded-md px-3 py-2 text-xs ${
               isTriggered
-                ? "bg-accent-red/[0.08] text-accent-red"
-                : "bg-white/[0.03] text-white/50"
+                ? "bg-[#fef2f2] text-[#ef4444]"
+                : "bg-[#f8fafc] text-[#64748b]"
             }`}
           >
-            <i className={`${punishment.icon} text-base`} />
+            <i className={`${punishment.icon} text-sm`} />
             <span>{punishment.name}</span>
             {isTriggered && (
-              <span className="ml-auto rounded-full bg-accent-red/15 px-2 py-0.5 text-xs font-medium">
+              <span className="ml-auto rounded bg-[#ef4444] px-1.5 py-0.5 text-[10px] text-white">
                 触发
               </span>
             )}
           </div>
         ))}
       </div>
-    </GlowCard>
+    </motion.div>
   );
 }
