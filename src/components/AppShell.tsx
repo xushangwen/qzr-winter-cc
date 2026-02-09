@@ -4,6 +4,8 @@ import { useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { useAppData } from "@/hooks/useAppData";
 import { getNextWeek, getPrevWeek, getTodayStr, getWeekDates } from "@/lib/date-utils";
+import GlowCard from "./ui/GlowCard";
+import AnimatedCounter from "./ui/AnimatedCounter";
 import PunishmentPanel from "./PunishmentPanel";
 import RewardPanel from "./RewardPanel";
 import StatsPanel from "./StatsPanel";
@@ -50,6 +52,7 @@ export default function AppShell() {
         alert(success ? "数据导入成功！" : "导入失败，文件格式不正确");
       }
     };
+
     reader.readAsText(file);
     e.target.value = "";
   };
@@ -68,13 +71,14 @@ export default function AppShell() {
     [weekDates]
   );
 
+  /* 加载态 */
   if (!isLoaded || !data) {
     return (
       <div className="flex min-h-screen items-center justify-center px-4">
-        <div className="panel-shadow rounded-2xl border border-border/80 bg-surface/92 px-6 py-8">
+        <div className="glass-card px-7 py-8">
           <div className="flex flex-col items-center gap-3">
-            <div className="h-9 w-9 animate-spin rounded-full border-2 border-primary/25 border-t-primary" />
-            <p className="text-base text-foreground/65">加载中...</p>
+            <div className="h-10 w-10 animate-spin rounded-full border-2 border-primary/20 border-t-primary" />
+            <p className="text-base text-white/50">加载中...</p>
           </div>
         </div>
       </div>
@@ -85,33 +89,32 @@ export default function AppShell() {
     <div className="relative min-h-screen">
       <SpaceBackground />
 
-      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 md:py-10">
-        <header className="panel-shadow mb-5 rounded-3xl border border-border/80 bg-surface/94 p-5 md:mb-7 md:p-7">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-start gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-light text-white shadow-sm md:h-14 md:w-14">
-                <i className="ri-rocket-2-line text-xl md:text-2xl" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
-                  乔子然寒假日程
-                </h1>
-                <p className="mt-1 text-sm leading-relaxed text-foreground/68 md:text-base">
-                  每日打卡 · 积星兑奖 · 养成好习惯
-                </p>
-              </div>
+      <div className="relative z-10 mx-auto w-full max-w-[1200px] px-4 py-6 sm:px-6 md:py-10">
+        {/* 顶部 Header */}
+        <GlowCard glow className="mb-5 px-5 py-5 md:mb-7 md:px-7 md:py-7">
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="ui-kicker">Daily Growth Dashboard</p>
+              <h1 className="ui-title mt-1 text-3xl font-semibold text-white md:text-4xl">
+                乔子然寒假日程
+              </h1>
+              <p className="mt-2 text-[15px] text-white/50 md:text-base">
+                每日打卡、周度复盘、积分兑换，一目了然。
+              </p>
             </div>
 
-            <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/12 to-primary-light/10 px-4 py-3 sm:min-w-[196px]">
-              <p className="text-sm text-foreground/68">当前可用星星</p>
-              <p className="num mt-1 flex items-center gap-2 text-3xl font-semibold text-primary md:text-4xl">
+            {/* 星星余额卡片 */}
+            <div className="glow-purple rounded-2xl border border-primary/25 bg-gradient-to-r from-primary/15 to-accent-blue/10 px-4 py-3.5 md:min-w-[220px]">
+              <p className="text-sm text-white/50">可用星星余额</p>
+              <p className="num mt-1.5 flex items-center gap-2 text-3xl font-semibold text-primary-light md:text-4xl">
                 <span>⭐</span>
-                <span>{availableStars}</span>
+                <AnimatedCounter value={availableStars} />
               </p>
             </div>
           </div>
-        </header>
+        </GlowCard>
 
+        {/* 周导航 */}
         <div className="mb-4 md:mb-5">
           <WeekNavigator
             weekDates={weekDates}
@@ -122,8 +125,10 @@ export default function AppShell() {
           />
         </div>
 
-        <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
-          <div className="space-y-4 lg:col-span-2">
+        {/* Bento Grid 主体 */}
+        <div className="grid grid-cols-1 gap-5 xl:grid-cols-12">
+          {/* 左侧：打卡表格 + 图例 */}
+          <section className="space-y-4 xl:col-span-8">
             <WeeklyGrid
               weekDates={weekDates}
               records={data.records}
@@ -132,27 +137,29 @@ export default function AppShell() {
               getDayRate={getDayRate}
             />
 
-            <div className="panel-shadow rounded-2xl border border-border/75 bg-surface/92 px-4 py-3.5">
-              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-foreground/74">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-base">⭐</span>
+            {/* 图例说明 */}
+            <div className="glass-card px-4 py-3.5">
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-white/55">
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">⭐</span>
                   <span>金星 = 2分</span>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-base">🌸</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">🌸</span>
                   <span>粉花 = 1分</span>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <div className="flex h-4 w-4 items-center justify-center rounded bg-surface-lighter/90">
-                    <i className="ri-add-line text-[10px] text-foreground/45" />
+                <div className="flex items-center gap-2">
+                  <div className="flex h-4 w-4 items-center justify-center rounded bg-white/[0.06]">
+                    <i className="ri-add-line text-[10px] text-white/30" />
                   </div>
                   <span>未完成</span>
                 </div>
               </div>
             </div>
-          </div>
+          </section>
 
-          <div className="space-y-4">
+          {/* 右侧：统计 + 奖励 */}
+          <aside className="space-y-4 xl:col-span-4">
             <StatsPanel
               data={data}
               weekDates={weekDates}
@@ -166,22 +173,27 @@ export default function AppShell() {
               redeemHistory={data.redeemHistory}
               onRedeem={handleRedeem}
             />
-            <PunishmentPanel weekRate={weekRate} isWeekFinished={isWeekFinished} />
-          </div>
+          </aside>
         </div>
 
+        {/* 惩罚面板 - 全宽 */}
+        <div className="mt-5">
+          <PunishmentPanel weekRate={weekRate} isWeekFinished={isWeekFinished} />
+        </div>
+
+        {/* 底部操作 */}
         <footer className="mt-9 space-y-4 text-center">
           <div className="flex flex-wrap items-center justify-center gap-3">
             <button
               onClick={handleExport}
-              className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-border/75 bg-surface/94 px-4 py-2.5 text-sm font-medium text-foreground/82 hover:border-border hover:bg-surface-light"
+              className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-white/[0.06] bg-white/[0.04] px-4 py-2.5 text-sm font-medium text-white/70 hover:bg-white/[0.08]"
             >
               <i className="ri-download-2-line" />
               导出数据
             </button>
             <button
               onClick={handleFileImport}
-              className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-border/75 bg-surface/94 px-4 py-2.5 text-sm font-medium text-foreground/82 hover:border-border hover:bg-surface-light"
+              className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-white/[0.06] bg-white/[0.04] px-4 py-2.5 text-sm font-medium text-white/70 hover:bg-white/[0.08]"
             >
               <i className="ri-upload-2-line" />
               导入数据
@@ -194,7 +206,7 @@ export default function AppShell() {
               className="hidden"
             />
           </div>
-          <p className="text-sm text-foreground/55">子然加油！每天进步一点点</p>
+          <p className="text-sm text-white/35">坚持每天完成一个小目标，就是很大的进步。</p>
         </footer>
       </div>
     </div>

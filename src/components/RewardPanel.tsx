@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { REWARDS } from "@/lib/constants";
 import { RedeemRecord } from "@/lib/types";
+import GlowCard from "./ui/GlowCard";
+import AnimatedCounter from "./ui/AnimatedCounter";
 
 interface RewardPanelProps {
   availableStars: number;
@@ -35,27 +37,25 @@ export default function RewardPanel({
     if (success) {
       if (redeemTimerRef.current) clearTimeout(redeemTimerRef.current);
       setJustRedeemed(rewardId);
-      redeemTimerRef.current = setTimeout(() => setJustRedeemed(null), 1800);
+      redeemTimerRef.current = setTimeout(() => setJustRedeemed(null), 1600);
     }
     setShowConfirm(null);
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 14 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: 0.08 }}
-      className="panel-shadow rounded-3xl border border-border/75 bg-surface/94 p-4 md:p-5"
-    >
+    <GlowCard delay={0.16} className="p-4 md:p-5">
       <div className="mb-4 flex items-center gap-2">
         <i className="ri-gift-2-line text-lg text-accent-gold" />
-        <h2 className="text-base font-semibold text-foreground md:text-lg">奖励兑换</h2>
+        <h2 className="text-base font-semibold text-white md:text-lg">奖励兑换</h2>
       </div>
 
-      <div className="mb-4 rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 to-primary-light/8 p-4">
-        <p className="text-sm text-foreground/70">可用星星</p>
-        <p className="num mt-1 text-3xl font-semibold text-primary md:text-4xl">{availableStars}</p>
-        <div className="mt-3 grid grid-cols-2 gap-2 text-sm text-foreground/68">
+      {/* 星星余额卡片 */}
+      <div className="glow-purple mb-4 rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/12 to-accent-cyan/8 p-4">
+        <p className="text-sm text-white/45">可用星星</p>
+        <p className="num mt-1 text-3xl font-semibold text-primary-light md:text-4xl">
+          <AnimatedCounter value={availableStars} />
+        </p>
+        <div className="mt-3 grid grid-cols-2 gap-2 text-sm text-white/45">
           <p className="num">
             累计获得: <span className="font-semibold text-accent-gold">{totalEarned}</span>
           </p>
@@ -65,6 +65,7 @@ export default function RewardPanel({
         </div>
       </div>
 
+      {/* 奖励列表 */}
       <div className="space-y-3">
         {REWARDS.map((reward) => {
           const canAfford = availableStars >= reward.cost;
@@ -74,29 +75,29 @@ export default function RewardPanel({
           return (
             <div
               key={reward.id}
-              className={`rounded-2xl border p-3 transition-colors ${
+              className={`rounded-2xl border p-3 ${
                 canAfford
-                  ? "border-border/75 bg-surface-light/75"
-                  : "border-border/60 bg-surface-light/45 opacity-72"
+                  ? "border-white/[0.08] bg-white/[0.03]"
+                  : "border-white/[0.04] bg-white/[0.02] opacity-60"
               }`}
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-start gap-3">
                   <div
                     className={`mt-0.5 flex h-10 w-10 items-center justify-center rounded-xl ${
-                      canAfford ? "bg-primary/12" : "bg-surface-lighter/80"
+                      canAfford ? "bg-primary/15" : "bg-white/[0.04]"
                     }`}
                   >
-                    <i className={`${reward.icon} text-lg ${canAfford ? "text-primary" : "text-foreground/35"}`} />
+                    <i className={`${reward.icon} text-lg ${canAfford ? "text-primary-light" : "text-white/25"}`} />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-foreground md:text-base">{reward.name}</p>
-                    <p className="mt-0.5 text-sm text-foreground/64">{reward.description}</p>
+                    <p className="text-sm font-semibold text-white md:text-base">{reward.name}</p>
+                    <p className="mt-0.5 text-sm leading-relaxed text-white/45">{reward.description}</p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <span className={`num text-sm font-semibold ${canAfford ? "text-accent-gold" : "text-foreground/35"}`}>
+                  <span className={`num text-sm font-semibold ${canAfford ? "text-accent-gold" : "text-white/25"}`}>
                     ★{reward.cost}
                   </span>
 
@@ -107,7 +108,7 @@ export default function RewardPanel({
                         initial={{ scale: 0.8, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.8, opacity: 0 }}
-                        className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-green/20"
+                        className="glow-green flex h-8 w-8 items-center justify-center rounded-lg bg-accent-green/20"
                       >
                         <i className="ri-check-line text-accent-green" />
                       </motion.div>
@@ -121,14 +122,14 @@ export default function RewardPanel({
                       >
                         <button
                           onClick={() => handleRedeem(reward.id, reward.name, reward.cost)}
-                          className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-accent-green/20 text-accent-green transition-colors hover:bg-accent-green/30"
+                          className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-accent-green/20 text-accent-green hover:bg-accent-green/30"
                           aria-label="确认兑换"
                         >
                           <i className="ri-check-line" />
                         </button>
                         <button
                           onClick={() => setShowConfirm(null)}
-                          className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-accent-red/20 text-accent-red transition-colors hover:bg-accent-red/30"
+                          className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-accent-red/20 text-accent-red hover:bg-accent-red/30"
                           aria-label="取消兑换"
                         >
                           <i className="ri-close-line" />
@@ -139,10 +140,10 @@ export default function RewardPanel({
                         key="redeem"
                         onClick={() => canAfford && setShowConfirm(reward.id)}
                         disabled={!canAfford}
-                        className={`cursor-pointer rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+                        className={`cursor-pointer rounded-lg px-3 py-1.5 text-sm font-medium ${
                           canAfford
-                            ? "bg-primary text-white hover:opacity-90"
-                            : "bg-surface-lighter/70 text-foreground/35 cursor-not-allowed"
+                            ? "bg-gradient-to-r from-primary to-accent-blue text-white shadow-sm hover:opacity-90"
+                            : "bg-white/[0.04] text-white/25 cursor-not-allowed"
                         }`}
                       >
                         兑换
@@ -152,7 +153,8 @@ export default function RewardPanel({
                 </div>
               </div>
 
-              <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-surface-lighter/80">
+              {/* 进度条 */}
+              <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-white/[0.06]">
                 <motion.div
                   className="h-full rounded-full bg-gradient-to-r from-primary to-accent-gold"
                   initial={{ width: 0 }}
@@ -165,9 +167,10 @@ export default function RewardPanel({
         })}
       </div>
 
+      {/* 兑换记录 */}
       {redeemHistory.length > 0 && (
-        <div className="mt-5 border-t border-border/70 pt-4">
-          <p className="mb-2 text-sm font-medium text-foreground/72">兑换记录</p>
+        <div className="mt-5 border-t border-white/[0.06] pt-4">
+          <p className="mb-2 text-sm font-medium text-white/55">兑换记录</p>
           <div className="max-h-[132px] space-y-2 overflow-y-auto pr-1">
             {redeemHistory
               .slice()
@@ -175,10 +178,10 @@ export default function RewardPanel({
               .map((record) => (
                 <div
                   key={record.id}
-                  className="num flex items-center justify-between rounded-lg bg-surface-light/65 px-2.5 py-2 text-sm"
+                  className="num flex items-center justify-between rounded-lg bg-white/[0.03] px-2.5 py-2 text-sm"
                 >
-                  <span className="text-foreground/82">{record.rewardName}</span>
-                  <div className="flex items-center gap-2 text-foreground/56">
+                  <span className="text-white/70">{record.rewardName}</span>
+                  <div className="flex items-center gap-2 text-white/45">
                     <span className="font-medium text-accent-pink">-★{record.cost}</span>
                     <span>{record.date}</span>
                   </div>
@@ -187,6 +190,6 @@ export default function RewardPanel({
           </div>
         </div>
       )}
-    </motion.div>
+    </GlowCard>
   );
 }

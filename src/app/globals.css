@@ -2,18 +2,20 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #f3f4ef;
-  --color-foreground: #19242f;
-  --color-primary: #176b63;
-  --color-primary-light: #2c8f85;
-  --color-accent-gold: #9f7a32;
-  --color-accent-pink: #bd6a56;
-  --color-accent-green: #2f7d4b;
-  --color-accent-red: #b44a2a;
-  --color-surface: #ffffff;
-  --color-surface-light: #f8f8f4;
-  --color-surface-lighter: #e5e7df;
-  --color-border: #d2d6ca;
+  --color-background: #0a0a0f;
+  --color-foreground: #e2e8f0;
+  --color-primary: #8b5cf6;
+  --color-primary-light: #a78bfa;
+  --color-accent-blue: #3b82f6;
+  --color-accent-cyan: #06b6d4;
+  --color-accent-gold: #f59e0b;
+  --color-accent-pink: #ec4899;
+  --color-accent-green: #10b981;
+  --color-accent-red: #ef4444;
+  --color-surface: rgba(255, 255, 255, 0.04);
+  --color-surface-light: rgba(255, 255, 255, 0.06);
+  --color-surface-lighter: rgba(255, 255, 255, 0.08);
+  --color-border: rgba(255, 255, 255, 0.06);
   --font-sans: "IBM Plex Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
   --font-mono: ui-monospace, monospace;
 }
@@ -24,33 +26,90 @@ html {
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #c6ccbd transparent;
+  scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
 }
 
 body {
   min-height: 100vh;
   overflow-x: hidden;
-  background:
-    radial-gradient(900px 520px at 92% -8%, rgba(23, 107, 99, 0.08), transparent 52%),
-    radial-gradient(800px 460px at 4% 0%, rgba(159, 122, 50, 0.08), transparent 50%),
-    linear-gradient(180deg, #f8f9f5 0%, #f3f4ef 52%, #eef0e8 100%);
+  background: #0a0a0f;
   color: var(--color-foreground);
   font-family: var(--font-sans);
-  line-height: 1.5;
+  line-height: 1.56;
   text-rendering: optimizeLegibility;
 }
 
-.panel-shadow {
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.8),
-    0 1px 2px rgba(15, 23, 42, 0.03),
-    0 12px 28px rgba(15, 23, 42, 0.045);
-}
-
+/* 数字字体 */
 .num {
   font-family: var(--font-space-grotesk), "IBM Plex Sans SC", system-ui, sans-serif;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.01em;
+}
+
+/* 玻璃态卡片 */
+.glass-card {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+}
+
+/* 渐变边框卡片 */
+.glass-card-glow {
+  position: relative;
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+}
+
+.glass-card-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 1.25rem;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(59, 130, 246, 0.15), rgba(6, 182, 212, 0.1));
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  pointer-events: none;
+}
+
+/* 小标签文字 */
+.ui-kicker {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.ui-title {
+  letter-spacing: -0.02em;
+}
+
+/* 发光工具类 */
+.glow-purple {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.15), 0 0 60px rgba(139, 92, 246, 0.05);
+}
+
+.glow-gold {
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.2), 0 0 60px rgba(245, 158, 11, 0.06);
+}
+
+.glow-pink {
+  box-shadow: 0 0 20px rgba(236, 72, 153, 0.2), 0 0 60px rgba(236, 72, 153, 0.06);
+}
+
+.glow-green {
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.2), 0 0 60px rgba(16, 185, 129, 0.06);
+}
+
+.glow-red {
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.2), 0 0 60px rgba(239, 68, 68, 0.06);
 }
 
 button {
@@ -59,9 +118,18 @@ button {
   transition-timing-function: ease;
 }
 
+button:active {
+  transform: translateY(0.5px);
+}
+
+::selection {
+  background: rgba(139, 92, 246, 0.3);
+  color: #f1f5f9;
+}
+
 @media (max-width: 767px) {
   html {
-    font-size: 17px;
+    font-size: 18px;
   }
 
   button {
@@ -73,7 +141,7 @@ button {
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    background: #c6ccbd;
+    background: rgba(255, 255, 255, 0.12);
     border-radius: 999px;
   }
 }

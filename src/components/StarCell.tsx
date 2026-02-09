@@ -10,6 +10,7 @@ interface StarCellProps {
   isToday: boolean;
 }
 
+/* 三态发光切换：空态(暗) → 金星(金色光晕) → 粉花(粉色光晕) */
 export default function StarCell({ status, onToggle, isToday }: StarCellProps) {
   const [animateKey, setAnimateKey] = useState(0);
 
@@ -30,14 +31,14 @@ export default function StarCell({ status, onToggle, isToday }: StarCellProps) {
       onClick={handleClick}
       aria-label={ariaLabel}
       className={`
-        group relative flex min-h-[50px] w-full aspect-square cursor-pointer items-center justify-center rounded-xl border transition-all active:scale-95
-        ${isToday ? "ring-2 ring-primary/30" : ""}
+        group relative flex min-h-[52px] w-full aspect-square cursor-pointer items-center justify-center rounded-xl border transition-all active:scale-[0.96]
+        ${isToday ? "ring-2 ring-primary/40" : ""}
         ${
           status === "none"
-            ? "border-border/70 bg-surface-light/80 hover:bg-surface-lighter/75"
+            ? "border-white/[0.06] bg-white/[0.03] hover:bg-white/[0.06]"
             : status === "gold"
-            ? "border-accent-gold/35 bg-accent-gold/10"
-            : "border-accent-pink/35 bg-accent-pink/10"
+            ? "border-amber-400/25 bg-amber-400/[0.08] glow-gold"
+            : "border-pink-400/25 bg-pink-400/[0.08] glow-pink"
         }
       `}
     >
@@ -48,17 +49,17 @@ export default function StarCell({ status, onToggle, isToday }: StarCellProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="text-foreground/35 transition-colors group-hover:text-foreground/48"
+            className="text-white/20 transition-colors group-hover:text-white/40"
           >
             <i className="ri-add-line text-xl" />
           </motion.div>
         ) : status === "gold" ? (
           <motion.span
             key={`gold-${animateKey}`}
-            initial={{ scale: 0.75, opacity: 0 }}
+            initial={{ scale: 0.5, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 300, damping: 22 }}
+            exit={{ scale: 0.8, opacity: 0 }}
+            transition={{ type: "spring", stiffness: 400, damping: 15 }}
             className="text-2xl"
           >
             ⭐
@@ -66,10 +67,10 @@ export default function StarCell({ status, onToggle, isToday }: StarCellProps) {
         ) : (
           <motion.span
             key={`pink-${animateKey}`}
-            initial={{ scale: 0.75, opacity: 0 }}
+            initial={{ scale: 0.5, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 300, damping: 22 }}
+            exit={{ scale: 0.8, opacity: 0 }}
+            transition={{ type: "spring", stiffness: 400, damping: 15 }}
             className="text-2xl"
           >
             🌸
