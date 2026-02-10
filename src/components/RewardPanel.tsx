@@ -14,7 +14,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import AnimatedCounter from "./ui/AnimatedCounter";
 
 interface RewardPanelProps {
   availableStars: number;
@@ -60,22 +59,14 @@ export default function RewardPanel({
       className="card-minimal p-5"
     >
       {/* 标题 */}
-      <div className="mb-4 flex items-center gap-2">
-        <i className="ri-gift-line text-sm text-[var(--primary)]" />
-        <h2 className="text-sm font-semibold text-[var(--foreground)]">奖励兑换</h2>
-      </div>
-
-      {/* 星星余额 - 大数字风格 */}
-      <div className="mb-5 flex items-center gap-4 rounded-lg bg-[var(--secondary)] p-4">
-        <div className="flex-1">
-          <p className="text-xs text-[var(--muted-foreground)]">可用星星</p>
-          <p className="num text-3xl font-semibold text-[var(--foreground)]">
-            <AnimatedCounter value={availableStars} />
-          </p>
+      <div className="mb-4 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <i className="ri-gift-line text-sm text-[var(--primary)]" />
+          <h2 className="text-sm font-semibold text-[var(--foreground)]">奖励兑换</h2>
         </div>
-        <div className="text-right text-xs text-[var(--muted-foreground)]">
-          <p>累计: <span className="num font-medium text-[var(--primary)]">{totalEarned}</span></p>
-          <p>已兑: <span className="num font-medium text-[#f472b6]">{totalSpent}</span></p>
+        {/* 小统计 */}
+        <div className="num text-xs text-[var(--muted-foreground)]">
+          累计: <span className="text-[var(--primary)]">{totalEarned}</span> · 已兑: <span className="text-[var(--pink)]">{totalSpent}</span>
         </div>
       </div>
 
@@ -168,7 +159,7 @@ export default function RewardPanel({
                 >
                   <span className="text-[var(--secondary-foreground)]">{record.rewardName}</span>
                   <div className="flex items-center gap-2 text-[var(--muted-foreground)]">
-                    <span className="font-medium text-[#f472b6]">-★{record.cost}</span>
+                    <span className="font-medium text-[var(--pink)]">-★{record.cost}</span>
                     <span>{record.date}</span>
                   </div>
                 </div>
@@ -186,17 +177,17 @@ export default function RewardPanel({
               确定要花费 <span className="num font-medium text-[var(--primary)]">★{confirmReward?.cost}</span> 星星兑换「{confirmReward?.name}」吗？
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className="gap-2">
+          <DialogFooter className="flex-col sm:flex-row gap-2">
             <Button 
               variant="outline" 
               onClick={() => setConfirmReward(null)} 
-              className="cursor-pointer border-[var(--border)] text-[var(--secondary-foreground)] hover:bg-[var(--secondary)]"
+              className="cursor-pointer border-[var(--border)] text-[var(--secondary-foreground)] hover:bg-[var(--secondary)] w-full sm:w-auto"
             >
               取消
             </Button>
             <Button 
               onClick={handleRedeem} 
-              className="cursor-pointer bg-[var(--primary)] text-[var(--primary-foreground)] hover:opacity-90"
+              className="cursor-pointer bg-[var(--primary)] text-[var(--primary-foreground)] hover:opacity-90 w-full sm:w-auto"
             >
               确认兑换
             </Button>

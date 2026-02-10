@@ -25,108 +25,119 @@ export default function WeeklyGrid({
     return records[date]?.[taskId] || "none";
   };
 
+  // 检查是否有任何打卡记录
+  const hasAnyRecords = Object.keys(records).length > 0 && 
+    Object.values(records).some(day => Object.keys(day).length > 0);
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className="card-minimal overflow-hidden"
-    >
-      <div className="scrollbar-thin overflow-x-auto">
-        <table className="w-full min-w-[640px]">
-          <thead>
-            <tr className="border-b border-[var(--border)]">
-              <th className="sticky left-0 z-10 w-[120px] bg-[var(--card)] px-4 py-3 text-left">
-                <span className="text-xs font-medium text-[var(--muted-foreground)]">任务</span>
-              </th>
-              {weekDates.map((date, index) => {
-                const today = isTodayDate(date);
-                return (
-                  <th key={date} className="min-w-[72px] px-1 py-3 text-center">
-                    <div className="flex flex-col items-center gap-1">
-                      <span className={`text-xs font-medium ${today ? "text-[var(--primary)]" : "text-[var(--muted-foreground)]"}`}>
-                        周{WEEKDAY_NAMES_SHORT[index]}
+    <div className="space-y-4">
+      {/* 表头 - 日期行 */}
+      <div className="card-minimal p-3">
+        <div className="flex items-center">
+          {/* 左上角空白 */}
+          <div className="w-[100px] flex-shrink-0" />
+          
+          {/* 日期列 */}
+          <div className="flex-1 grid grid-cols-7 gap-2">
+            {weekDates.map((date, index) => {
+              const today = isTodayDate(date);
+              const stars = getDayStars(date);
+              const rate = getDayRate(date);
+              
+              return (
+                <motion.div
+                  key={date}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  className={`flex flex-col items-center gap-1 p-2 rounded-lg transition-all ${
+                    today 
+                      ? "bg-[var(--primary-subtle)] ring-1 ring-[var(--primary)]/30" 
+                      : ""
+                  }`}
+                >
+                  <span className={`text-xs font-medium ${
+                    today ? "text-[var(--primary)]" : "text-[var(--muted-foreground)]"
+                  }`}>
+                    周{WEEKDAY_NAMES_SHORT[index]}
+                  </span>
+                  <span className={`num text-sm font-semibold ${
+                    today ? "text-[var(--primary)]" : "text-[var(--foreground)]"
+                  }`}>
+                    {formatDateShort(date)}
+                  </span>
+                  
+                  {/* 每日统计小标签 */}
+                  <div className="flex flex-col items-center gap-0.5 mt-1">
+                    {stars > 0 && (
+                      <span className="num text-[10px] font-medium text-[var(--primary)]">
+                        {stars}★
                       </span>
-                      <span
-                        className={`num text-xs ${
-                          today 
-                            ? "bg-[var(--primary-subtle)] text-[var(--primary)] font-medium px-2 py-0.5 rounded-full" 
-                            : "text-[var(--muted-foreground)]"
-                        }`}
-                      >
-                        {formatDateShort(date)}
+                    )}
+                    {rate > 0 && (
+                      <span className={`num text-[9px] ${
+                        rate >= 80
+                          ? "text-[var(--success)]"
+                          : rate >= 50
+                          ? "text-[var(--warning)]"
+                          : "text-[var(--danger)]"
+                      }`}>
+                        {rate}%
                       </span>
-                    </div>
-                  </th>
-                );
-              })}
-            </tr>
-          </thead>
-
-          <tbody>
-            {TASKS.map((task, taskIndex) => (
-              <motion.tr
-                key={task.id}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: taskIndex * 0.02 }}
-                className="border-b border-[var(--border-light)] transition-colors hover:bg-[var(--secondary)]"
-              >
-                <td className="sticky left-0 z-10 bg-[var(--card)] px-4 py-2.5">
-                  <div className="flex items-center gap-2">
-                    <i className={`${task.icon} text-sm text-[var(--muted-foreground)]`} />
-                    <span className="text-sm text-[var(--secondary-foreground)]">{task.name}</span>
+                    )}
                   </div>
-                </td>
-
-                {weekDates.map((date) => (
-                  <td key={`${task.id}-${date}`} className="px-1 py-1.5">
-                    <StarCell
-                      status={getStatus(date, task.id)}
-                      onToggle={() => onToggle(date, task.id)}
-                      isToday={isTodayDate(date)}
-                    />
-                  </td>
-                ))}
-              </motion.tr>
-            ))}
-          </tbody>
-
-          <tfoot>
-            <tr className="bg-[var(--secondary)]">
-              <td className="sticky left-0 z-10 bg-[var(--secondary)] px-4 py-3">
-                <span className="text-xs font-medium text-[var(--muted-foreground)]">每日统计</span>
-              </td>
-              {weekDates.map((date) => {
-                const stars = getDayStars(date);
-                const rate = getDayRate(date);
-                return (
-                  <td key={`stats-${date}`} className="px-1 py-3 text-center">
-                    <div className="flex flex-col items-center gap-0.5">
-                      <span className="num text-xs font-semibold text-[var(--foreground)]">
-                        {stars > 0 ? `${stars}★` : "-"}
-                      </span>
-                      {rate > 0 && (
-                        <span
-                          className={`num text-[10px] ${
-                            rate >= 80
-                              ? "text-[var(--success)]"
-                              : rate >= 50
-                              ? "text-[var(--warning)]"
-                              : "text-[var(--danger)]"
-                          }`}
-                        >
-                          {rate}%
-                        </span>
-                      )}
-                    </div>
-                  </td>
-                );
-              })}
-            </tr>
-          </tfoot>
-        </table>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
       </div>
-    </motion.div>
+
+      {/* 任务行 - 卡片列表 */}
+      <div className="space-y-2">
+        {TASKS.map((task, taskIndex) => (
+          <motion.div
+            key={task.id}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: taskIndex * 0.05 }}
+            className="card-minimal p-3 hover:border-[var(--primary)]/20 transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              {/* 任务信息 */}
+              <div className="w-[100px] flex-shrink-0 flex items-center gap-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--secondary)]">
+                  <i className={`${task.icon} text-sm text-[var(--muted-foreground)]`} />
+                </div>
+                <span className="text-sm font-medium text-[var(--foreground)] truncate">
+                  {task.name}
+                </span>
+              </div>
+
+              {/* 打卡按钮行 */}
+              <div className="flex-1 grid grid-cols-7 gap-2">
+                {weekDates.map((date) => (
+                  <StarCell
+                    key={`${task.id}-${date}`}
+                    status={getStatus(date, task.id)}
+                    onToggle={() => onToggle(date, task.id)}
+                    isToday={isTodayDate(date)}
+                  />
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* 空状态提示 */}
+      {!hasAnyRecords && (
+        <div className="card-minimal empty-state py-12">
+          <div className="empty-state-icon">🎯</div>
+          <p className="empty-state-title">开始你的第一次打卡</p>
+          <p className="empty-state-desc">点击上方的格子标记今天的完成情况</p>
+        </div>
+      )}
+    </div>
   );
 }

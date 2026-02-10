@@ -130,7 +130,7 @@ export default function StatsPanel({
               </div>
               <div className="num flex min-w-[48px] items-center justify-end gap-1 text-[10px]">
                 <span className="text-[var(--primary)]">⭐{task.goldCount}</span>
-                <span className="text-[#f472b6]">🌸{task.pinkCount}</span>
+                <span className="text-[var(--pink)]">🌸{task.pinkCount}</span>
               </div>
             </div>
           ))}

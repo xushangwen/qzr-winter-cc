@@ -47,26 +47,29 @@ export default function WeekNavigator({
         </Button>
       </div>
 
-      {/* 日期范围 */}
-      <div className="text-center">
-        <p className="text-xs text-[var(--muted-foreground)]">时间范围</p>
-        <p className="num text-sm font-medium text-[var(--foreground)]">{formatWeekRange(weekDates)}</p>
+      {/* 日期范围 - 优化显示 */}
+      <div className="text-center min-w-0 flex-1 px-2">
+        <p className="text-xs text-[var(--muted-foreground)] hidden md:block">时间范围</p>
+        <p className="num text-sm font-medium text-[var(--foreground)] truncate">
+          {formatWeekRange(weekDates)}
+        </p>
       </div>
 
       {/* 本周/回到本周 */}
-      <div className="min-w-[72px] text-right">
+      <div className="flex-shrink-0">
         {!isCurrentWeek ? (
           <Button
             onClick={onToday}
-            className="cursor-pointer rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-sm hover:opacity-90 h-8"
+            className="cursor-pointer rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] text-xs hover:opacity-90 h-8 px-3"
             size="sm"
           >
-            回到本周
+            <span className="hidden sm:inline">回到本周</span>
+            <span className="sm:hidden">本周</span>
           </Button>
         ) : (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--success-subtle)] px-2.5 py-1 text-xs font-medium text-[var(--success)]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[var(--primary)]" />
-            本周
+            <span className="h-1.5 w-1.5 rounded-full bg-[var(--primary)] animate-pulse" />
+            <span className="hidden sm:inline">本周</span>
           </span>
         )}
       </div>

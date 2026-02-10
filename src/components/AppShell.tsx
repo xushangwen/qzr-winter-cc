@@ -88,8 +88,8 @@ export default function AppShell() {
       <div className="flex min-h-screen items-center justify-center px-4">
         <div className="card-minimal px-8 py-10">
           <div className="flex flex-col items-center gap-4">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#22c55e]/20 border-t-[#22c55e]" />
-            <p className="text-sm text-[#64748b]">加载中...</p>
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-[var(--primary)]/20 border-t-[var(--primary)]" />
+            <p className="text-sm text-[var(--muted-foreground)]">加载中...</p>
           </div>
         </div>
       </div>
@@ -119,23 +119,14 @@ export default function AppShell() {
               </p>
             </div>
             
+            {/* 星星余额 - 极简无卡片 */}
             <div className="flex items-center gap-3">
-
-              {/* 星星余额 - 极简大数字 */}
-              <div className="card-minimal flex items-center gap-4 px-5 py-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--primary-subtle)]">
-                  <span className="text-xl">⭐</span>
-                </div>
-                <div>
-                  <p className="text-xs text-[var(--muted-foreground)]">可用星星</p>
-                  <p className="num text-2xl font-semibold text-[var(--foreground)]">
-                    <AnimatedCounter value={availableStars} />
-                  </p>
-                </div>
+              <div className="flex items-center gap-2 rounded-full bg-[var(--primary-subtle)] px-4 py-2">
+                <span className="text-lg">⭐</span>
+                <span className="num text-xl font-semibold text-[var(--primary)]">
+                  <AnimatedCounter value={availableStars} />
+                </span>
               </div>
-              
-              {/* 主题切换 */}
-              <ThemeToggle />
             </div>
           </div>
         </motion.div>
@@ -187,34 +178,41 @@ export default function AppShell() {
           <PunishmentPanel weekRate={weekRate} isWeekFinished={isWeekFinished} />
         </div>
 
-        {/* 底部操作 */}
-        <footer className="mt-10 border-t border-[var(--border)] pt-6 text-center">
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            <Button 
-              variant="outline" 
-              onClick={handleExport} 
-              className="cursor-pointer gap-2 rounded-lg border-[var(--border)] bg-[var(--card)] text-[var(--secondary-foreground)] hover:bg-[var(--secondary)] hover:text-[var(--foreground)]"
-            >
-              <i className="ri-download-2-line" />
-              导出数据
-            </Button>
-            <Button 
-              variant="outline" 
-              onClick={handleFileImport} 
-              className="cursor-pointer gap-2 rounded-lg border-[var(--border)] bg-[var(--card)] text-[var(--secondary-foreground)] hover:bg-[var(--secondary)] hover:text-[var(--foreground)]"
-            >
-              <i className="ri-upload-2-line" />
-              导入数据
-            </Button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".json"
-              onChange={onFileChange}
-              className="hidden"
-            />
+        {/* 底部操作 - 移动端全宽 */}
+        <footer className="mt-10 border-t border-[var(--border)] pt-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
+              <Button 
+                variant="outline" 
+                onClick={handleExport} 
+                className="cursor-pointer gap-2 rounded-lg border-[var(--border)] bg-[var(--card)] text-[var(--secondary-foreground)] hover:bg-[var(--secondary)] hover:text-[var(--foreground)] w-full sm:w-auto justify-center"
+              >
+                <i className="ri-download-2-line" />
+                导出数据
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={handleFileImport} 
+                className="cursor-pointer gap-2 rounded-lg border-[var(--border)] bg-[var(--card)] text-[var(--secondary-foreground)] hover:bg-[var(--secondary)] hover:text-[var(--foreground)] w-full sm:w-auto justify-center"
+              >
+                <i className="ri-upload-2-line" />
+                导入数据
+              </Button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".json"
+                onChange={onFileChange}
+                className="hidden"
+              />
+            </div>
+            
+            {/* 主题切换按钮 */}
+            <div className="flex justify-center sm:justify-end">
+              <ThemeToggle />
+            </div>
           </div>
-          <p className="mt-4 text-xs text-[var(--muted-foreground)]">坚持每天完成一个小目标</p>
+          <p className="mt-4 text-center text-xs text-[var(--muted-foreground)]">坚持每天完成一个小目标</p>
         </footer>
       </div>
 
@@ -227,10 +225,10 @@ export default function AppShell() {
               {importResult.success ? "数据已成功导入！" : "导入失败，文件格式不正确。"}
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter>
+          <DialogFooter className="flex-col sm:flex-row gap-2">
             <Button 
               onClick={() => setImportResult({ open: false, success: false })} 
-              className="cursor-pointer bg-[var(--primary)] text-[var(--primary-foreground)] hover:opacity-90"
+              className="cursor-pointer bg-[var(--primary)] text-[var(--primary-foreground)] hover:opacity-90 w-full sm:w-auto"
             >
               确定
             </Button>

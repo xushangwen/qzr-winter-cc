@@ -10,7 +10,7 @@ interface StarCellProps {
   isToday: boolean;
 }
 
-/* 极简三态切换 - 支持暗色模式 */
+/* 强化动效三态切换 */
 export default function StarCell({ status, onToggle, isToday }: StarCellProps) {
   const [animateKey, setAnimateKey] = useState(0);
 
@@ -31,24 +31,40 @@ export default function StarCell({ status, onToggle, isToday }: StarCellProps) {
       onClick={handleClick}
       aria-label={ariaLabel}
       className={`
-        group relative flex h-10 w-full cursor-pointer items-center justify-center rounded-md border transition-all duration-150 active:scale-95
+        group relative flex h-10 w-full cursor-pointer items-center justify-center rounded-md border transition-all duration-150 active:scale-95 overflow-hidden
         ${isToday ? "ring-1 ring-[var(--primary)]/30" : ""}
         ${
           status === "none"
             ? "border-[var(--border)] bg-[var(--card)] hover:border-[var(--primary)]/40"
             : status === "gold"
             ? "border-[var(--primary)]/30 bg-[var(--primary-subtle)]"
-            : "border-[#f472b6]/30 bg-[#fce7f3]"
+            : "border-[var(--pink)]/30 bg-[var(--pink-subtle)]"
         }
       `}
     >
+      {/* 成功光效背景 */}
+      <AnimatePresence>
+        {status !== "none" && (
+          <motion.div
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 2, opacity: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className={`absolute inset-0 rounded-full ${
+              status === "gold" ? "bg-[var(--primary)]" : "bg-[var(--pink)]"
+            }`}
+            style={{ filter: "blur(10px)" }}
+          />
+        )}
+      </AnimatePresence>
+
       <AnimatePresence mode="wait">
         {status === "none" ? (
           <motion.div
             key={`empty-${animateKey}`}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
             className="text-[var(--border)]"
           >
             <i className="ri-add-line text-base" />
@@ -56,22 +72,32 @@ export default function StarCell({ status, onToggle, isToday }: StarCellProps) {
         ) : status === "gold" ? (
           <motion.span
             key={`gold-${animateKey}`}
-            initial={{ scale: 0.6, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.8, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 500, damping: 15 }}
-            className="text-base"
+            initial={{ scale: 0, rotate: -180, opacity: 0 }}
+            animate={{ scale: 1, rotate: 0, opacity: 1 }}
+            exit={{ scale: 0.5, opacity: 0 }}
+            transition={{ 
+              type: "spring", 
+              stiffness: 400, 
+              damping: 12,
+              rotate: { duration: 0.3 }
+            }}
+            className="text-base relative z-10"
           >
             ⭐
           </motion.span>
         ) : (
           <motion.span
             key={`pink-${animateKey}`}
-            initial={{ scale: 0.6, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.8, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 500, damping: 15 }}
-            className="text-base"
+            initial={{ scale: 0, rotate: 180, opacity: 0 }}
+            animate={{ scale: 1, rotate: 0, opacity: 1 }}
+            exit={{ scale: 0.5, opacity: 0 }}
+            transition={{ 
+              type: "spring", 
+              stiffness: 400, 
+              damping: 12,
+              rotate: { duration: 0.3 }
+            }}
+            className="text-base relative z-10"
           >
             🌸
           </motion.span>
